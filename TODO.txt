@@ -1,0 +1,5 @@
+TODO
+====
+
+* Add some POD :-)
+* Use Module::Fing to laod all classes
