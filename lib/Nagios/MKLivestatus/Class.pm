@@ -1,7 +1,10 @@
 package Nagios::MKLivestatus::Class;
 
-use warnings;
-use strict;
+use Moose;
+
+# TODO: Use Module::Find
+use Nagios::MKLivestatus::Class::Table::Hosts;
+use Nagios::MKLivestatus::Class::Base::Table;
 
 =head1 NAME
 
@@ -27,26 +30,48 @@ Perhaps a little code snippet.
     my $foo = Nagios::MKLivestatus::Class->new();
     ...
 
-=head1 EXPORT
+=cut
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+has 'socket' => (
+    is       => 'rw',
+    isa      => 'Str',
+    required => 1,
+);
+
+has 'backend' => (
+    is       => 'rw',
+    isa      => 'Str',
+    required => 1,
+);
+
+
+has 'backend_obj' => (
+    is       => 'ro',
+);
 
 =head1 FUNCTIONS
 
-=head2 function1
-
 =cut
 
-sub function1 {
+sub BUILD {
+    my $self = shift;
+
+    my $backend = sprintf 'Nagios::MKLivestatus::%s', $self->{backend};
+    Class::MOP::load_class($backend);
+    $self->{backend_obj} = $backend->new(
+        socket => $self->{socket}
+    );
 }
 
-=head2 function2
 
-=cut
 
-sub function2 {
+sub table {
+    my $self = shift;
+    my $table = shift;
+    my $class = Nagios::MKLivestatus::Class::Table::Hosts->new( ctx => $self );
+    return $class;
 }
+
 
 =head1 AUTHOR
 
