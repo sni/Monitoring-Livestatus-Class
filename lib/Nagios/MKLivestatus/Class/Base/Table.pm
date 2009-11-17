@@ -1,4 +1,5 @@
-package Nagios::MKLivestatus::Class::Base::Table;
+package # hide from pause 
+    Nagios::MKLivestatus::Class::Base::Table;
 
 use Moose;
 use Carp;
