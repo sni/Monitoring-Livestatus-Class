@@ -48,7 +48,35 @@ search...
 
 sub search {
     my $self = shift;
+    my $cond = shift;
+
+    my ( @statments ) = $self->_recurse_cond($cond,"AND");
+
+    return $self->_execute(@statments);
 }
+
+
+sub _execute {
+    my $self = shift;
+    my $data = shift;
+
+    $data = $self->_dispatch_refkind($data, {
+      ARRAYREF  => sub { return $data },
+      SCALAR    => sub { return [ $data ]},
+      UNDEF     => sub { return [] },
+    });
+
+    my $statment = join("\n",
+        sprintf("GET %s",$self->table_name),
+        @{ $data }
+    );
+
+    my $return = $self->backend_obj->selectall_arrayref($statment, { slice => {} });
+
+    return wantarray ? @{ $return }  : $return;
+}
+
+
 
 sub _generate_search_statment {
     my $self = shift;
@@ -70,6 +98,8 @@ sub _recurse_cond {
 
     return ( @statment );
 }
+
+sub _cond_UNDEF { return ( () ); }
 
 sub _cond_ARRAYREF {
     my $self = shift;
