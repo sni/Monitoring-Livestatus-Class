@@ -1,10 +1,7 @@
 package Nagios::MKLivestatus::Class;
 
 use Moose;
-
-# TODO: Use Module::Find
-use Nagios::MKLivestatus::Class::Table::Hosts;
-use Nagios::MKLivestatus::Class::Base::Table;
+use Module::Find;
 
 =head1 NAME
 
@@ -55,6 +52,9 @@ has 'backend_obj' => (
 
 sub BUILD {
     my $self = shift;
+
+    # Load all Modules 
+    useall Nagios::MKLivestatus::Class::Table;
 
     my $backend = sprintf 'Nagios::MKLivestatus::%s', $self->{backend};
     Class::MOP::load_class($backend);
