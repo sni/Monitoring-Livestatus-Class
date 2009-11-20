@@ -16,6 +16,10 @@ has 'table_name' => (
     builder  => 'build_table_name',
 );
 
+has 'statments' => (
+    is => 'rw',
+    isa => 'ArrayRef',
+);
 
 =head1 METHODS
 
@@ -53,9 +57,17 @@ sub search {
 
     my ( @statments ) = $self->_recurse_cond($cond,"AND");
 
-    return $self->_execute(@statments);
+    my @tmp = @{ $self->statments || [] };
+    push @tmp, @statments;
+    $self->statments(\@tmp);
+    return $self;
 }
 
+sub hashref_array {
+    my $self = shift;
+    my @data =  $self->_execute(@{ $self->statments });
+    return wantarray ? @data : \@data;
+}
 
 sub _execute {
     my $self = shift;
@@ -76,8 +88,6 @@ sub _execute {
 
     return wantarray ? @{ $return }  : $return;
 }
-
-
 
 sub _generate_search_statment {
     my $self = shift;

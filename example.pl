@@ -22,8 +22,8 @@ my $class = Nagios::MKLivestatus::Class->new(
 my $hosts = $class->table('hosts');
 
 my @headers = $hosts->columns();
-my @rows = $hosts->search();
-print Dumper \@rows;
+my @data = $hosts->search->hashref_array();
+print Dumper \@data;
 
 
 
