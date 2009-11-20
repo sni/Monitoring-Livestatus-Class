@@ -58,9 +58,7 @@ sub BUILD {
 
     my $backend = sprintf 'Nagios::MKLivestatus::%s', $self->{backend};
     Class::MOP::load_class($backend);
-    $self->{backend_obj} = $backend->new(
-        socket => $self->{socket}
-    );
+    $self->{backend_obj} = $backend->new( $self->{socket} );
 }
 
 

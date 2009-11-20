@@ -11,7 +11,7 @@ use Nagios::MKLivestatus::INET;
 use lib 'lib/';
 use Nagios::MKLivestatus::Class;
 
-my $livestatus = Nagios::MKLivestatus::INET->new( socket => '10.211.55.140:6557' );
+my $livestatus = Nagios::MKLivestatus::INET->new( '10.211.55.140:6557' );
 printf "%s\n", $livestatus->selectall_arrayref("GET hosts");
 
 my $class = Nagios::MKLivestatus::Class->new(

@@ -6,7 +6,7 @@ author   q{Robert Bohne <rbo@cpan.org>};
 license  'perl';
 
 requires 'Moose';
-requires 'Nagios::MKLivestatus' => '0.16';
+requires 'Nagios::MKLivestatus' => '1.07';
 
 build_requires 'Test::More';
 
