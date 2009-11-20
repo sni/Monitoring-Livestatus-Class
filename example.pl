@@ -19,7 +19,7 @@ my $class = Nagios::MKLivestatus::Class->new(
     socket => '10.211.55.140:6557',
 );
 
-my $hosts = $class->table('hosts');
+my $hosts = $class->table('services');
 
 my @headers = $hosts->columns();
 my @data = $hosts->search->hashref_array();

@@ -65,9 +65,9 @@ sub BUILD {
 
 sub table {
     my $self = shift;
-    my $table = shift;
-    my $class = Nagios::MKLivestatus::Class::Table::Hosts->new( ctx => $self );
-    return $class;
+    my $table = ucfirst(lc(shift));
+    my $class = sprintf("Nagios::MKLivestatus::Class::Table::%s",$table);
+    return $class->new( ctx => $self );
 }
 
 
