@@ -18,23 +18,45 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+
 
 Perhaps a little code snippet.
 
     use Nagios::MKLivestatus::Class;
 
-    my $foo = Nagios::MKLivestatus::Class->new();
-    ...
+    my $foo = Nagios::MKLivestatus::Class->new(
+        backend => 'INET',
+        socket => '10.211.55.140:6557',
+    );
 
 =cut
 
+=head1 ATTRIBUTES
+
+=head2 socket
+
+Path to unix socket or host:port
+
+=cut
 has 'socket' => (
     is       => 'rw',
     isa      => 'Str',
     required => 1,
 );
 
+=head2 backend
+
+=head3 Values:
+
+=over 4
+
+=item Socket
+
+=item INET
+
+=back
+
+=cut
 has 'backend' => (
     is       => 'rw',
     isa      => 'Str',
@@ -50,7 +72,7 @@ has 'backend_obj' => (
 
 =head2 BUILD
 
-BUILD Methods
+BUILD Method
 
 =cut
 
