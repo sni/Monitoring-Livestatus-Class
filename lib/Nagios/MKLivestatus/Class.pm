@@ -46,7 +46,11 @@ has 'backend_obj' => (
     is       => 'ro',
 );
 
-=head1 FUNCTIONS
+=head1 METHODS
+
+=head2 BUILD
+
+BUILD Methods
 
 =cut
 
@@ -62,7 +66,15 @@ sub BUILD {
 }
 
 
+=head2 table
 
+Get table object from ....
+
+Arguments: $scalar
+
+Returns: $table_object
+
+=cut
 sub table {
     my $self = shift;
     my $table = ucfirst(lc(shift));

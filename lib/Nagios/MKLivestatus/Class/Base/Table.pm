@@ -4,11 +4,29 @@ package # hide from pause
 use Moose;
 use Carp;
 
+=head1 NAME
+
+Nagios::MKLivestatus::Class::Base::Table - Base class for all table objects.
+
+=head1 ATTRIBUTES
+
+=head2 ctx
+
+Reference to context object L<Nagios::MKLivestatus::Class>
+
+=cut
+
 has 'ctx' => (
     is => 'rw',
     isa => 'Nagios::MKLivestatus::Class',
     handles => [qw/backend_obj/],
 );
+
+=head2 table_name
+
+Containts the table name.
+
+=cut
 
 has 'table_name' => (
     is => 'ro',
@@ -16,6 +34,11 @@ has 'table_name' => (
     builder  => 'build_table_name',
 );
 
+=head2 statments
+
+Containts the all statments.
+
+=cut
 has 'statments' => (
     is => 'rw',
     isa => 'ArrayRef',
@@ -35,6 +58,10 @@ sub build_table_name {
 
 Return a list of all columns.
 
+Arguments: none
+
+Returns: @cols|\@cols
+
 =cut
 sub columns{
     my $self = shift;
@@ -49,8 +76,11 @@ sub columns{
 
 search...
 
-=cut
+Arguments: $search
 
+Returns: @cols|\@cols
+
+=cut
 sub search {
     my $self = shift;
     my $cond = shift;
@@ -63,11 +93,30 @@ sub search {
     return $self;
 }
 
+=head2 hashref_array
+
+search...
+
+Arguments: none
+
+Returns: @data|\@data
+
+=cut
 sub hashref_array {
     my $self = shift;
     my @data =  $self->_execute(@{ $self->statments });
     return wantarray ? @data : \@data;
 }
+
+=head1 INTERNAL METHODS
+
+=over 4
+
+=item _execute
+
+_execute....
+
+=cut
 
 sub _execute {
     my $self = shift;
@@ -89,6 +138,11 @@ sub _execute {
     return wantarray ? @{ $return }  : $return;
 }
 
+=item _recurse_cond
+
+_recurse_cond....
+
+=cut
 sub _recurse_cond {
     my $self = shift;
     my $cond = shift;
@@ -100,8 +154,18 @@ sub _recurse_cond {
     return ( @statment );
 }
 
+=item _cond_UNDEF
+
+_cond_UNDEF....
+
+=cut
 sub _cond_UNDEF { return ( () ); }
 
+=item _cond_ARRAYREF
+
+_cond_ARRAYREF....
+
+=cut
 sub _cond_ARRAYREF {
     my $self = shift;
     my $conds = shift;
@@ -119,6 +183,11 @@ sub _cond_ARRAYREF {
     return ( @all_statment );
 }
 
+=item _cond_HASHREF
+
+_cond_HASHREF....
+
+=cut
 sub _cond_HASHREF {
     my $self = shift;
     my $cond = shift;
@@ -139,6 +208,11 @@ sub _cond_HASHREF {
     return ( @all_statment );
 }
 
+=item _cond_hashpair_SCALAR
+
+_cond_hashpair_SCALAR....
+
+=cut
 sub _cond_hashpair_SCALAR {
     my $self = shift;
     my $key = shift || '';
@@ -149,6 +223,11 @@ sub _cond_hashpair_SCALAR {
     return ( @statment );
 };
 
+=item _cond_hashpair_ARRAYREF
+
+_cond_hashpair_ARRAYREF....
+
+=cut
 sub _cond_hashpair_ARRAYREF {
     my $self = shift;
     my $key = shift || '';
@@ -160,6 +239,11 @@ sub _cond_hashpair_ARRAYREF {
     return ( @statment );
 }
 
+=item _refkind
+
+_refkind....
+
+=cut
 sub _refkind {
   my ($self, $data) = @_;
   my $suffix = '';
@@ -180,6 +264,11 @@ sub _refkind {
   return $base . ('REF' x $n_steps);
 }
 
+=item _dispatch_refkind
+
+_dispatch_refkind....
+
+=cut
 sub _dispatch_refkind {
     my $self = shift;
     my $value = shift;
@@ -190,6 +279,13 @@ sub _dispatch_refkind {
     return $coderef->();
 }
 
+=item _METHOD_FOR_refkind
+
+_METHOD_FOR_refkind....
+
+=back
+
+=cut
 sub _METHOD_FOR_refkind {
     my $self = shift;
     my $prefix = shift || '';
@@ -198,5 +294,21 @@ sub _METHOD_FOR_refkind {
     my $method = sprintf("%s_%s",$prefix,$type);
     return $method;
 }
+
+=head1 AUTHOR
+
+Robert Bohne, C<< <rbo at cpan.org> >>
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2009 Robert Bohne.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
+
+See http://dev.perl.org/licenses/ for more information.
+
+=cut
 
 1; # End of Nagios::MKLivestatus::Class
