@@ -8,6 +8,17 @@ use Carp;
 
 Nagios::MKLivestatus::Class::Base::Table - Base class for all table objects.
 
+=head2 SYNOPSIS
+
+    my $class = Nagios::MKLivestatus::Class->new(
+        backend => 'INET',
+        socket => '10.211.55.140:6557',
+    );
+
+    my $table_obj = $class->table('services');
+
+    my $data = $table_obj->search( {} )->hashref_array();
+
 =head1 ATTRIBUTES
 
 =head2 ctx
@@ -56,11 +67,7 @@ sub build_table_name {
 
 =head2 columns
 
-Return a list of all columns.
-
-Arguments: none
-
-Returns: @cols|\@cols
+Returns a array or reference to array, depending on the calling context, of all header columns.
 
 =cut
 sub columns{
@@ -74,11 +81,13 @@ sub columns{
 
 =head2 search
 
-search...
+Example usage:
 
-Arguments: $search
+    $table_obj->search( { name => 'localhost' } );
+    $table_obj->search( { name => [ 'localhost', 'gateway' ] } );
+    $table_obj->search( [ { name => 'localhost' }, { name => 'gateway' } ] );
 
-Returns: @cols|\@cols
+Returns: $self
 
 =cut
 sub search {
@@ -95,11 +104,12 @@ sub search {
 
 =head2 hashref_array
 
-search...
+Returns a array or reference to array, depending on the calling context.
 
-Arguments: none
+Example usage:
 
-Returns: @data|\@data
+    my $hashref_array = $table_obj->search( { } )->hashref_array;
+    print Dumper $hashref_array;
 
 =cut
 sub hashref_array {
