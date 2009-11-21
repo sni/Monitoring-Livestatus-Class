@@ -205,13 +205,8 @@ sub _cond_HASHREF {
     my ( @all_statment );
     foreach my $key ( keys %{ $cond } ){
         my $value = $cond->{$key};
-        my ( @statment );
-        if ( $key =~ /^(-.+)/ ){
-            # Do operations stuff -and / -or
-        }else{
-            my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$value);
-            ( @statment ) = $self->$method($key, $value);
-        }
+        my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$value);
+        my ( @statment ) = $self->$method($key, $value);
         push @all_statment, @statment;
     }
 
@@ -242,10 +237,43 @@ sub _cond_hashpair_ARRAYREF {
     my $self = shift;
     my $key = shift || '';
     my $values = shift || [];
+    my $operator = shift || '=';
     my @statment = ();
     foreach my $value ( @{ $values }){
-        push @statment, sprintf("Filter: %s = %s",$key,$value)
+        push @statment, sprintf("Filter: %s %s %s",$key,$operator,$value);
     }
+    return ( @statment );
+}
+
+=item _cond_hashpair_HASHREF
+
+_cond_hashpair_HASHREF....
+
+=cut
+sub _cond_hashpair_HASHREF {
+    my $self = shift;
+    my $key = shift || '';
+    my $values = shift || {};
+    my @statment = ();
+
+    foreach my $child_key ( keys %{ $values } ){
+        my $child_value = $values->{ $child_key };
+
+        if ( $child_key =~ /^-/ ){
+            my $operator = $child_key; # work with copy
+            $operator =~ s/^-//; # remove -
+            $operator =~ s/^\s+|\s+$//g; # remove leading/trailing space
+            croak "-$operator not supported yet...";
+        } elsif ( $child_key =~ /^[!<>=]/ ){
+            croak "$child_key not support yet...";
+
+        } else {
+            my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$child_value);
+            my ( @child_statment ) = $self->$method($key, $child_value);
+            push @statment, @child_statment;
+        }
+    }
+
     return ( @statment );
 }
 
