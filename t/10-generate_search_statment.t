@@ -2,15 +2,7 @@
 
 use Test::More;
 
-use_ok('Nagios::MKLivestatus::Class::Base::Table;');
-
-*generate_search_statment = sub {
-    return Nagios::MKLivestatus::Class::Base::Table::_generate_search_statment(
-        Nagios::MKLivestatus::Class::Base::Table,
-        @_,
-        undef,
-    );
-};
+use_ok('Nagios::MKLivestatus::Class::Table::Hosts');
 
 my @testings = (
     { name => 'localhost' }, [ "Filter: name = localhost" ],
@@ -26,10 +18,9 @@ my @testings = (
 for ( my $i = 0 ; $i < scalar @testings ; $i++ ) {
     my $search   = $testings[ $i ];
     my $expected_statment = $testings[ ++$i ];
-    my @got_statment = generate_search_statment($search);
-    is_deeply( \@got_statment , $expected_statment, sprintf( "Test %d", ( $i / 2 ) + 1 ) );
+    my $hosts_obj = Nagios::MKLivestatus::Class::Table::Hosts->new();
+    my $got_statment = $hosts_obj->search($search)->statments;
+    is_deeply( $got_statment , $expected_statment, sprintf( "Test %d", ( $i / 2 ) + 1 ) );
 }
-
-# warn generate_search_statment();
 
 done_testing;
