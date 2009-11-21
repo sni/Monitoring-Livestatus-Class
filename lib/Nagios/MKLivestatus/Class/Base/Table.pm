@@ -89,16 +89,6 @@ sub _execute {
     return wantarray ? @{ $return }  : $return;
 }
 
-sub _generate_search_statment {
-    my $self = shift;
-    my $cond = shift;
-    my $logic = shift || "AND";
-
-    my ( @statment ) = $self->_recurse_cond($cond,$logic);
-
-    return @statment;
-}
-
 sub _recurse_cond {
     my $self = shift;
     my $cond = shift;
