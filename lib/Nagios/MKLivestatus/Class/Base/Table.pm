@@ -239,6 +239,7 @@ sub _cond_hashpair_ARRAYREF {
     my $key = shift || '';
     my $values = shift || [];
     my $operator = shift || '=';
+    my $combinding_count = shift || 0;
     my @statment = ();
     foreach my $value ( @{ $values }){
         push @statment, sprintf("Filter: %s %s %s",$key,$operator,$value);
@@ -256,15 +257,24 @@ sub _cond_hashpair_HASHREF {
     my $key = shift || '';
     my $values = shift || {};
     my @statment = ();
+    my $combinding = undef;
+    my $combinding_count = 0;
 
     foreach my $child_key ( keys %{ $values } ){
         my $child_value = $values->{ $child_key };
 
         if ( $child_key =~ /^-/ ){
-            my $operator = $child_key; # work with copy
-            $operator =~ s/^-//; # remove -
-            $operator =~ s/^\s+|\s+$//g; # remove leading/trailing space
-            croak "-$operator not supported yet...";
+            # Child key for combining filters ( -and / -or )
+            my $combinding = $child_key; # work with copy
+            $combinding =~ s/^-//; # remove -
+            $combinding =~ s/^\s+|\s+$//g; # remove leading/trailing space
+            $combinding = ucfirst( $combinding );
+
+            my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$child_value);
+            my ( @child_statment ) = $self->$method($key, $child_value);
+            push @statment, @child_statment;
+            push @statment, sprintf("%s: %d",$combinding,$combinding_count);
+            # croak "$combinding not supported yet...";
         } elsif ( $child_key =~ /^[!<>=~]/ ){
             # Child key is a operator like:
             # =     equality
