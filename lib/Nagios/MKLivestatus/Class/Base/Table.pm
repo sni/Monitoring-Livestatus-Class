@@ -265,9 +265,19 @@ sub _cond_hashpair_HASHREF {
             $operator =~ s/^-//; # remove -
             $operator =~ s/^\s+|\s+$//g; # remove leading/trailing space
             croak "-$operator not supported yet...";
-        } elsif ( $child_key =~ /^[!<>=]/ ){
-            croak "$child_key not support yet...";
-
+        } elsif ( $child_key =~ /^[!<>=~]/ ){
+            # Child key is a operator like:
+            # =     equality
+            # ~     match regular expression (substring match)
+            # =~    equality ignoring case
+            # ~~    regular expression ignoring case
+            # <     less than
+            # >     greater than
+            # <=    less or equal
+            # >=    greater or equal
+            my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$child_value);
+            my ( @child_statment ) = $self->$method($key, $child_value,$child_key);
+            push @statment, @child_statment;
         } else {
             my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$child_value);
             my ( @child_statment ) = $self->$method($key, $child_value);

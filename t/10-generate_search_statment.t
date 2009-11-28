@@ -14,7 +14,15 @@ my @testings = (
     ], [ "Filter: name = localhost", "Filter: name = router" ],
     # not supported at the moment
     # { name => { '-or' => [ qw/localhost router/] } },[ "Filter: name = localhost", "Filter: name = router" ],
-    # { name => { '<=' => [ qw/localhost router/] } },[ "Filter: name <= localhost", "Filter: name <= router" ],
+    # Simple operator tests
+    { name => { '=' => [ qw/localhost router/] } },[ "Filter: name = localhost", "Filter: name = router" ],
+    { name => { '~' => [ qw/localhost router/] } },[ "Filter: name ~ localhost", "Filter: name ~ router" ],
+    { name => { '~=' => [ qw/localhost router/] } },[ "Filter: name ~= localhost", "Filter: name ~= router" ],
+    { name => { '~~' => [ qw/localhost router/] } },[ "Filter: name ~~ localhost", "Filter: name ~~ router" ],
+    { name => { '<' => [ qw/localhost router/] } },[ "Filter: name < localhost", "Filter: name < router" ],
+    { name => { '>' => [ qw/localhost router/] } },[ "Filter: name > localhost", "Filter: name > router" ],
+    { name => { '<=' => [ qw/localhost router/] } },[ "Filter: name <= localhost", "Filter: name <= router" ],
+    { name => { '>=' => [ qw/localhost router/] } },[ "Filter: name >= localhost", "Filter: name >= router" ],
 );
 
 for ( my $i = 0 ; $i < scalar @testings ; $i++ ) {
