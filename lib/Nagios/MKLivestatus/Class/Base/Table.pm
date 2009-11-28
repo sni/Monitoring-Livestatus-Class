@@ -222,8 +222,9 @@ sub _cond_hashpair_SCALAR {
     my $self = shift;
     my $key = shift || '';
     my $value = shift || '';
+    my $operator = shift || '=';
     my @statment = (
-        sprintf("Filter: %s = %s",$key,$value)
+        sprintf("Filter: %s %s %s",$key,$operator,$value)
     );
     return ( @statment );
 };
