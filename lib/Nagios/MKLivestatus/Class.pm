@@ -16,6 +16,8 @@ Version 0.01
 our $VERSION = '0.01';
 
 
+our $TRACE = $ENV{'NAGIOS_MKlIVESTATUS_CLASS_TRACE'} ? 1 : 0;
+
 =head1 SYNOPSIS
 
 

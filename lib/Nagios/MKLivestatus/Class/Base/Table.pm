@@ -157,6 +157,7 @@ sub _recurse_cond {
     my $self = shift;
     my $cond = shift;
     my $combining_count = shift || 0;
+    print STDERR "# _recurse_cond $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     my $method = $self->_METHOD_FOR_refkind("_cond",$cond);
     my ( $child_combining_count, @statment ) = $self->$method($cond,$combining_count);
     $combining_count += $child_combining_count;
@@ -179,6 +180,7 @@ sub _cond_ARRAYREF {
     my $self = shift;
     my $conds = shift;
     my $combining_count = shift || 0;
+    print STDERR "# _cond_ARRAYREF $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     my @statment = ();
 
     my $child_combining_count = 0;
@@ -203,6 +205,8 @@ sub _cond_HASHREF {
     my $self = shift;
     my $cond = shift;
     my $combining_count = shift || 0;
+    print STDERR "# _cond_HASHREF $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
+
     my @all_statment = ();
     my $child_combining_count = 0;
     my @child_statment = ();
@@ -235,6 +239,8 @@ sub _cond_hashpair_SCALAR {
     my $key = shift || '';
     my $value = shift;
     my $operator = shift || '=';
+    print STDERR "# _cond_hashpair_SCALAR\n" if $Nagios::MKLivestatus::Class::TRACE;
+
     my $combining_count = shift || 0;
     my @statment = (
         sprintf("Filter: %s %s %s",$key,$operator,$value)
@@ -254,6 +260,8 @@ sub _cond_hashpair_ARRAYREF {
     my $values = shift || [];
     my $operator = shift || '=';
     my $combining_count = shift || 0;
+    print STDERR "# _cond_hashpair_ARRAYREF $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
+
     my @statment = ();
     foreach my $value ( @{ $values }){
         push @statment, sprintf("Filter: %s %s %s",$key,$operator,$value);
@@ -273,6 +281,8 @@ sub _cond_hashpair_HASHREF {
     my $values = shift || {};
     my $combining = shift || undef;
     my $combining_count = shift || 0;
+    print STDERR "# _cond_hashpair_HASHREF $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
+
     my @statment = ();
 
     foreach my $child_key ( keys %{ $values } ){
@@ -321,6 +331,7 @@ sub _cond_compinding {
     my $combining = shift;
     my $value = shift;
     my $combining_count = shift || 0;
+    print STDERR "# _cond_compinding $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     my @statment = ();
 
     if ( defined $combining and $combining =~ /^-/ ){
