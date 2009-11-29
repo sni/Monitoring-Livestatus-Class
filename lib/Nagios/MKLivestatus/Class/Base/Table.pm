@@ -95,7 +95,7 @@ sub search {
     my $self = shift;
     my $cond = shift;
 
-    my ( $combinding_count, @statments ) = $self->_recurse_cond($cond,"AND");
+    my ( $combinding_count, @statments ) = $self->_recurse_cond($cond);
     my @tmp = @{ $self->statments || [] };
     push @tmp, @statments;
     $self->statments(\@tmp);
@@ -156,10 +156,10 @@ _recurse_cond....
 sub _recurse_cond {
     my $self = shift;
     my $cond = shift;
-    my $logic = shift || 'and';
-
+    my $combinding_count = shift || 0;
     my $method = $self->_METHOD_FOR_refkind("_cond",$cond);
-    my ( $combinding_count, @statment ) = $self->$method($cond,$logic);
+    my ( $child_combinding_count, @statment ) = $self->$method($cond,$combinding_count);
+    $combinding_count += $child_combinding_count;
     return ( $combinding_count, @statment );
 }
 
@@ -178,19 +178,20 @@ _cond_ARRAYREF....
 sub _cond_ARRAYREF {
     my $self = shift;
     my $conds = shift;
-    my $logic = shift;
-    my @all_statment = ();
-    my $combinding_count = 0;
+    my $combinding_count = shift || 0;
+    my @statment = ();
 
+    my $child_combinding_count = 0;
+    my @child_statment = ();
     foreach my $cond ( @{ $conds } ){
-        my ( $combinding_count, @statment ) = $self->_dispatch_refkind($cond, {
-          HASHREF   => sub { $self->_recurse_cond($cond, 'and') },
+        my ( $child_combinding_count, @child_statment ) = $self->_dispatch_refkind($cond, {
+          HASHREF   => sub { $self->_recurse_cond($cond, $combinding_count) },
           UNDEF     => sub { croak "not supported : UNDEF in arrayref" },
         });
-        push @all_statment, @statment;
+        push @statment, @child_statment;
+        $combinding_count += $child_combinding_count;
     }
-
-    return ( $combinding_count, @all_statment );
+    return ( $combinding_count, @statment );
 }
 
 =item _cond_HASHREF
@@ -201,9 +202,8 @@ _cond_HASHREF....
 sub _cond_HASHREF {
     my $self = shift;
     my $cond = shift;
-    my $logic = shift;
+    my $combinding_count = shift || 0;
     my @all_statment = ();
-    my $combinding_count = 0;
     my $child_combinding_count = 0;
     my @child_statment = ();
 
@@ -328,7 +328,7 @@ sub _cond_compinding {
         $combinding =~ s/^\s+|\s+$//g; # remove leading/trailing space
         $combinding = ucfirst( $combinding );
     }
-    my ( $child_combinding_count, @child_statment )= $self->_recurse_cond($value);
+    my ( $child_combinding_count, @child_statment )= $self->_recurse_cond($value, $combinding_count);
     push @statment, @child_statment;
     push @statment, sprintf("%s: %d",$combinding,$child_combinding_count) if ( defined $combinding );
     $combinding_count++;
