@@ -4,6 +4,7 @@ package # hide from pause
 use Moose;
 use Carp;
 
+use Data::Dumper::Names;
 =head1 NAME
 
 Nagios::MKLivestatus::Class::Base::Table - Base class for all table objects.
@@ -159,7 +160,6 @@ sub _recurse_cond {
 
     my $method = $self->_METHOD_FOR_refkind("_cond",$cond);
     my ( $combinding_count, @statment ) = $self->$method($cond,$logic);
-
     return ( $combinding_count, @statment );
 }
 
@@ -204,14 +204,24 @@ sub _cond_HASHREF {
     my $logic = shift;
     my @all_statment = ();
     my $combinding_count = 0;
+    my $child_combinding_count = 0;
+    my @child_statment = ();
 
     foreach my $key ( keys %{ $cond } ){
         my $value = $cond->{$key};
-        my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$value);
-        my ( $combinding_count, @statment ) = $self->$method($key, $value);
-        push @all_statment, @statment;
-    }
+        my $method ;
 
+        if ( $key =~ /^-/ ){
+            # Child key for combining filters ( -and / -or )
+            ( $child_combinding_count, @child_statment ) = $self->_cond_compinding($key, $value, $combinding_count);
+        } else{
+            $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$value);
+            ( $child_combinding_count, @child_statment ) = $self->$method($key, $value);
+        }
+
+        push @all_statment, @child_statment;
+        $combinding_count += $child_combinding_count;
+    }
     return ( $combinding_count, @all_statment );
 }
 
@@ -223,7 +233,7 @@ _cond_hashpair_SCALAR....
 sub _cond_hashpair_SCALAR {
     my $self = shift;
     my $key = shift || '';
-    my $value = shift || '';
+    my $value = shift;
     my $operator = shift || '=';
     my $combinding_count = shift || 0;
     my @statment = (
@@ -261,24 +271,25 @@ sub _cond_hashpair_HASHREF {
     my $self = shift;
     my $key = shift || '';
     my $values = shift || {};
+    my $combinding = shift || undef;
+    my $combinding_count = shift || 0;
     my @statment = ();
-    my $combinding = undef;
-    my $combinding_count = 0;
 
     foreach my $child_key ( keys %{ $values } ){
         my $child_value = $values->{ $child_key };
 
         if ( $child_key =~ /^-/ ){
             # Child key for combining filters ( -and / -or )
-            my $combinding = $child_key; # work with copy
-            $combinding =~ s/^-//; # remove -
-            $combinding =~ s/^\s+|\s+$//g; # remove leading/trailing space
-            $combinding = ucfirst( $combinding );
+            my $child_combinding = $child_key; # work with copy
+            $child_combinding =~ s/^-//; # remove -
+            $child_combinding =~ s/^\s+|\s+$//g; # remove leading/trailing space
+            $child_combinding = ucfirst( $child_combinding );
 
             my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$child_value);
             my ( $child_combinding_count, @child_statment ) = $self->$method($key, $child_value);
             push @statment, @child_statment;
-            push @statment, sprintf("%s: %d",$combinding,$child_combinding_count);
+            push @statment, sprintf("%s: %d",$child_combinding,$child_combinding_count);
+            $combinding_count++;
             # croak "$combinding not supported yet...";
         } elsif ( $child_key =~ /^[!<>=~]/ ){
             # Child key is a operator like:
@@ -292,14 +303,35 @@ sub _cond_hashpair_HASHREF {
             # >=    greater or equal
             my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$child_value);
             my ( $child_combinding_count, @child_statment ) = $self->$method($key, $child_value,$child_key);
+            $combinding_count += $child_combinding_count;
             push @statment, @child_statment;
         } else {
             my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$child_value);
             my ( $child_combinding_count, @child_statment ) = $self->$method($key, $child_value);
+            $combinding_count += $child_combinding_count;
             push @statment, @child_statment;
         }
     }
 
+    return ( $combinding_count, @statment );
+}
+
+sub _cond_compinding {
+    my $self = shift;
+    my $combinding = shift;
+    my $value = shift;
+    my $combinding_count = shift || 0;
+    my @statment = ();
+
+    if ( defined $combinding and $combinding =~ /^-/ ){
+        $combinding =~ s/^-//; # remove -
+        $combinding =~ s/^\s+|\s+$//g; # remove leading/trailing space
+        $combinding = ucfirst( $combinding );
+    }
+    my ( $child_combinding_count, @child_statment )= $self->_recurse_cond($value);
+    push @statment, @child_statment;
+    push @statment, sprintf("%s: %d",$combinding,$child_combinding_count) if ( defined $combinding );
+    $combinding_count++;
     return ( $combinding_count, @statment );
 }
 

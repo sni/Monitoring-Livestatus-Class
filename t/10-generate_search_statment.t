@@ -14,6 +14,15 @@ my @testings = (
     ], [ "Filter: name = localhost", "Filter: name = router" ],
     # not supported at the moment
     { name => { '-or' => [ qw/localhost router/] } },[ "Filter: name = localhost", "Filter: name = router", "Or: 2" ],
+    { '-or' => {
+            scheduled_downtime_depth => { '>' => '0' },
+            host_scheduled_downtime_depth => { '>' => '0'},
+        }
+    },['Filter: host_scheduled_downtime_depth > 0','Filter: scheduled_downtime_depth > 0','Or: 2'],
+    [
+        { '-and' => { state => '2', acknowledged => '1', } },
+        { '-or' => { state => '0' } },
+    ],['Filter: acknowledged = 1', 'Filter: state = 2', 'And: 2', 'Filter: state = 0', 'Or: 2'],
     # Simple operator tests
     { name => { '=' => [ qw/localhost router/] } },[ "Filter: name = localhost", "Filter: name = router" ],
     { name => { '~' => [ qw/localhost router/] } },[ "Filter: name ~ localhost", "Filter: name ~ router" ],
@@ -23,6 +32,7 @@ my @testings = (
     { name => { '>' => [ qw/localhost router/] } },[ "Filter: name > localhost", "Filter: name > router" ],
     { name => { '<=' => [ qw/localhost router/] } },[ "Filter: name <= localhost", "Filter: name <= router" ],
     { name => { '>=' => [ qw/localhost router/] } },[ "Filter: name >= localhost", "Filter: name >= router" ],
+    { host_scheduled_downtime_depth => { '>' => 0 } },[ "Filter: host_scheduled_downtime_depth > 0" ],
 );
 
 for ( my $i = 0 ; $i < scalar @testings ; $i++ ) {
@@ -33,7 +43,8 @@ for ( my $i = 0 ; $i < scalar @testings ; $i++ ) {
     eval {
         $got_statment = $hosts_obj->search($search)->statments;
     } or  warn @_;
-    is_deeply( $got_statment, $expected_statment, sprintf( "Test %d", ( $i / 2 ) + 1 ) );
+    is_deeply( $got_statment, $expected_statment,
+        sprintf( "Test %d - %s", ( $i / 2 ) + 1 , join " ",@{ $expected_statment } ));
 }
 
 done_testing;
