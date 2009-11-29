@@ -94,8 +94,7 @@ sub search {
     my $self = shift;
     my $cond = shift;
 
-    my ( @statments ) = $self->_recurse_cond($cond,"AND");
-
+    my ( $combinding_count, @statments ) = $self->_recurse_cond($cond,"AND");
     my @tmp = @{ $self->statments || [] };
     push @tmp, @statments;
     $self->statments(\@tmp);
@@ -159,9 +158,9 @@ sub _recurse_cond {
     my $logic = shift || 'and';
 
     my $method = $self->_METHOD_FOR_refkind("_cond",$cond);
-    my ( @statment ) = $self->$method($cond,$logic);
+    my ( $combinding_count, @statment ) = $self->$method($cond,$logic);
 
-    return ( @statment );
+    return ( $combinding_count, @statment );
 }
 
 =item _cond_UNDEF
@@ -180,17 +179,18 @@ sub _cond_ARRAYREF {
     my $self = shift;
     my $conds = shift;
     my $logic = shift;
-    my ( @all_statment );
+    my @all_statment = ();
+    my $combinding_count = 0;
 
     foreach my $cond ( @{ $conds } ){
-        my ( @statment ) = $self->_dispatch_refkind($cond, {
+        my ( $combinding_count, @statment ) = $self->_dispatch_refkind($cond, {
           HASHREF   => sub { $self->_recurse_cond($cond, 'and') },
           UNDEF     => sub { croak "not supported : UNDEF in arrayref" },
         });
         push @all_statment, @statment;
     }
 
-    return ( @all_statment );
+    return ( $combinding_count, @all_statment );
 }
 
 =item _cond_HASHREF
@@ -202,15 +202,17 @@ sub _cond_HASHREF {
     my $self = shift;
     my $cond = shift;
     my $logic = shift;
-    my ( @all_statment );
+    my @all_statment = ();
+    my $combinding_count = 0;
+
     foreach my $key ( keys %{ $cond } ){
         my $value = $cond->{$key};
         my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$value);
-        my ( @statment ) = $self->$method($key, $value);
+        my ( $combinding_count, @statment ) = $self->$method($key, $value);
         push @all_statment, @statment;
     }
 
-    return ( @all_statment );
+    return ( $combinding_count, @all_statment );
 }
 
 =item _cond_hashpair_SCALAR
@@ -223,10 +225,12 @@ sub _cond_hashpair_SCALAR {
     my $key = shift || '';
     my $value = shift || '';
     my $operator = shift || '=';
+    my $combinding_count = shift || 0;
     my @statment = (
         sprintf("Filter: %s %s %s",$key,$operator,$value)
     );
-    return ( @statment );
+    $combinding_count++;
+    return ( $combinding_count, @statment );
 };
 
 =item _cond_hashpair_ARRAYREF
@@ -243,8 +247,9 @@ sub _cond_hashpair_ARRAYREF {
     my @statment = ();
     foreach my $value ( @{ $values }){
         push @statment, sprintf("Filter: %s %s %s",$key,$operator,$value);
+        $combinding_count++;
     }
-    return ( @statment );
+    return ( $combinding_count, @statment );
 }
 
 =item _cond_hashpair_HASHREF
@@ -271,9 +276,9 @@ sub _cond_hashpair_HASHREF {
             $combinding = ucfirst( $combinding );
 
             my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$child_value);
-            my ( @child_statment ) = $self->$method($key, $child_value);
+            my ( $child_combinding_count, @child_statment ) = $self->$method($key, $child_value);
             push @statment, @child_statment;
-            push @statment, sprintf("%s: %d",$combinding,$combinding_count);
+            push @statment, sprintf("%s: %d",$combinding,$child_combinding_count);
             # croak "$combinding not supported yet...";
         } elsif ( $child_key =~ /^[!<>=~]/ ){
             # Child key is a operator like:
@@ -286,16 +291,16 @@ sub _cond_hashpair_HASHREF {
             # <=    less or equal
             # >=    greater or equal
             my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$child_value);
-            my ( @child_statment ) = $self->$method($key, $child_value,$child_key);
+            my ( $child_combinding_count, @child_statment ) = $self->$method($key, $child_value,$child_key);
             push @statment, @child_statment;
         } else {
             my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$child_value);
-            my ( @child_statment ) = $self->$method($key, $child_value);
+            my ( $child_combinding_count, @child_statment ) = $self->$method($key, $child_value);
             push @statment, @child_statment;
         }
     }
 
-    return ( @statment );
+    return ( $combinding_count, @statment );
 }
 
 =item _refkind
