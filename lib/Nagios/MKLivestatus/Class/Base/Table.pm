@@ -157,10 +157,11 @@ sub _recurse_cond {
     my $self = shift;
     my $cond = shift;
     my $combining_count = shift || 0;
-    print STDERR "# _recurse_cond $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
+    print STDERR "#IN _recurse_cond $cond $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     my $method = $self->_METHOD_FOR_refkind("_cond",$cond);
     my ( $child_combining_count, @statment ) = $self->$method($cond,$combining_count);
     $combining_count += $child_combining_count;
+    print STDERR "#OUT _recurse_cond $cond $combining_count ( $method )\n" if $Nagios::MKLivestatus::Class::TRACE;
     return ( $combining_count, @statment );
 }
 
@@ -180,7 +181,7 @@ sub _cond_ARRAYREF {
     my $self = shift;
     my $conds = shift;
     my $combining_count = shift || 0;
-    print STDERR "# _cond_ARRAYREF $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
+    print STDERR "#IN _cond_ARRAYREF $conds $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     my @statment = ();
 
     my $child_combining_count = 0;
@@ -191,8 +192,10 @@ sub _cond_ARRAYREF {
           UNDEF     => sub { croak "not supported : UNDEF in arrayref" },
         });
         push @statment, @child_statment;
-        $combining_count += $child_combining_count;
+        # $combining_count += $child_combining_count;
+        $combining_count++;
     }
+    print STDERR "#OUT _cond_ARRAYREF $conds $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     return ( $combining_count, @statment );
 }
 
@@ -205,7 +208,7 @@ sub _cond_HASHREF {
     my $self = shift;
     my $cond = shift;
     my $combining_count = shift || 0;
-    print STDERR "# _cond_HASHREF $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
+    print STDERR "#IN _cond_HASHREF $combining_count $cond\n" if $Nagios::MKLivestatus::Class::TRACE;
 
     my @all_statment = ();
     my $child_combining_count = 0;
@@ -218,14 +221,16 @@ sub _cond_HASHREF {
         if ( $key =~ /^-/ ){
             # Child key for combining filters ( -and / -or )
             ( $child_combining_count, @child_statment ) = $self->_cond_compinding($key, $value, $combining_count);
+            $combining_count++;
         } else{
             $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$value);
             ( $child_combining_count, @child_statment ) = $self->$method($key, $value);
+            $combining_count += $child_combining_count;
         }
 
         push @all_statment, @child_statment;
-        $combining_count += $child_combining_count;
     }
+    print STDERR "#OUT _cond_HASHREF $combining_count $cond\n" if $Nagios::MKLivestatus::Class::TRACE;
     return ( $combining_count, @all_statment );
 }
 
@@ -260,13 +265,14 @@ sub _cond_hashpair_ARRAYREF {
     my $values = shift || [];
     my $operator = shift || '=';
     my $combining_count = shift || 0;
-    print STDERR "# _cond_hashpair_ARRAYREF $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
+    print STDERR "#IN _cond_hashpair_ARRAYREF $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
 
     my @statment = ();
     foreach my $value ( @{ $values }){
         push @statment, sprintf("Filter: %s %s %s",$key,$operator,$value);
         $combining_count++;
     }
+    print STDERR "#OUT _cond_hashpair_ARRAYREF $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     return ( $combining_count, @statment );
 }
 
@@ -290,17 +296,13 @@ sub _cond_hashpair_HASHREF {
 
         if ( $child_key =~ /^-/ ){
             # Child key for combining filters ( -and / -or )
-            my $child_combining = $child_key; # work with copy
-            $child_combining =~ s/^-//; # remove -
-            $child_combining =~ s/^\s+|\s+$//g; # remove leading/trailing space
-            $child_combining = ucfirst( $child_combining );
-
-            my $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$child_value);
-            my ( $child_combining_count, @child_statment ) = $self->$method($key, $child_value);
+            my ( $child_combining_count, @child_statment ) = $self->_dispatch_refkind($child_value, {
+                ARRAYREF  => sub { $self->_cond_compinding($child_key, { $key => $child_value } , 0) },
+                UNDEF     => sub { croak "not supported : UNDEF in arrayref" },
+            });
+            $combining_count += $child_combining_count;
             push @statment, @child_statment;
-            push @statment, sprintf("%s: %d",$child_combining,$child_combining_count);
-            $combining_count++;
-            # croak "$combining not supported yet...";
+            # croak "$child_key not supported yet...";
         } elsif ( $child_key =~ /^[!<>=~]/ ){
             # Child key is a operator like:
             # =     equality
@@ -331,7 +333,7 @@ sub _cond_compinding {
     my $combining = shift;
     my $value = shift;
     my $combining_count = shift || 0;
-    print STDERR "# _cond_compinding $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
+    print STDERR "#IN _cond_compinding $combining $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     my @statment = ();
 
     if ( defined $combining and $combining =~ /^-/ ){
@@ -339,10 +341,10 @@ sub _cond_compinding {
         $combining =~ s/^\s+|\s+$//g; # remove leading/trailing space
         $combining = ucfirst( $combining );
     }
-    my ( $child_combining_count, @child_statment )= $self->_recurse_cond($value, $combining_count);
+    my ( $child_combining_count, @child_statment )= $self->_recurse_cond($value, 0 );
     push @statment, @child_statment;
     push @statment, sprintf("%s: %d",$combining,$child_combining_count) if ( defined $combining );
-    $combining_count++;
+    print STDERR "#OUT _cond_compinding $combining $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     return ( $combining_count, @statment );
 }
 

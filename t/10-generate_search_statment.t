@@ -19,10 +19,29 @@ my @testings = (
             host_scheduled_downtime_depth => { '>' => '0'},
         }
     },['Filter: host_scheduled_downtime_depth > 0','Filter: scheduled_downtime_depth > 0','Or: 2'],
-    [
-        { '-and' => { state => '2', acknowledged => '1', } },
-        { '-or' => { state => '0' } },
-    ],['Filter: acknowledged = 1', 'Filter: state = 2', 'And: 2', 'Filter: state = 0', 'Or: 2'],
+    {
+        '-or' => {
+            '-and' => { state => '2', acknowledged => '1', },
+            state => '0',
+        }
+    },['Filter: acknowledged = 1', 'Filter: state = 2', 'And: 2', 'Filter: state = 0', 'Or: 2'],
+    {
+        '-or' => [
+            { host_has_been_checked => 0, },
+            {
+                '-and' => {
+                    host_state            => 1,
+                    host_has_been_checked => 1,
+                }
+            },
+            {
+                '-and' => {
+                    host_state            => 2,
+                    host_has_been_checked => 1,
+                }
+            },
+        ]
+    },['Filter: host_has_been_checked = 0','Filter: host_state = 1','Filter: host_has_been_checked = 1','And: 2','Filter: host_state = 2','Filter: host_has_been_checked = 1','And: 2','Or: 3',],
     # Simple operator tests
     { name => { '=' => [ qw/localhost router/] } },[ "Filter: name = localhost", "Filter: name = router" ],
     { name => { '~' => [ qw/localhost router/] } },[ "Filter: name ~ localhost", "Filter: name ~ router" ],
