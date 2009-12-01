@@ -220,7 +220,7 @@ sub _cond_HASHREF {
 
         if ( $key =~ /^-/ ){
             # Child key for combining filters ( -and / -or )
-            ( $child_combining_count, @child_statment ) = $self->_cond_compinding($key, $value, $combining_count);
+            ( $child_combining_count, @child_statment ) = $self->_cond_compining($key, $value, $combining_count);
             $combining_count++;
         } else{
             $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$value);
@@ -297,7 +297,7 @@ sub _cond_hashpair_HASHREF {
         if ( $child_key =~ /^-/ ){
             # Child key for combining filters ( -and / -or )
             my ( $child_combining_count, @child_statment ) = $self->_dispatch_refkind($child_value, {
-                ARRAYREF  => sub { $self->_cond_compinding($child_key, { $key => $child_value } , 0) },
+                ARRAYREF  => sub { $self->_cond_compining($child_key, { $key => $child_value } , 0) },
                 UNDEF     => sub { croak "not supported : UNDEF in arrayref" },
             });
             $combining_count += $child_combining_count;
@@ -328,12 +328,12 @@ sub _cond_hashpair_HASHREF {
     return ( $combining_count, @statment );
 }
 
-sub _cond_compinding {
+sub _cond_compining {
     my $self = shift;
     my $combining = shift;
     my $value = shift;
     my $combining_count = shift || 0;
-    print STDERR "#IN _cond_compinding $combining $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
+    print STDERR "#IN _cond_compining $combining $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     my @statment = ();
 
     if ( defined $combining and $combining =~ /^-/ ){
@@ -344,7 +344,7 @@ sub _cond_compinding {
     my ( $child_combining_count, @child_statment )= $self->_recurse_cond($value, 0 );
     push @statment, @child_statment;
     push @statment, sprintf("%s: %d",$combining,$child_combining_count) if ( defined $combining );
-    print STDERR "#OUT _cond_compinding $combining $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
+    print STDERR "#OUT _cond_compining $combining $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     return ( $combining_count, @statment );
 }
 
