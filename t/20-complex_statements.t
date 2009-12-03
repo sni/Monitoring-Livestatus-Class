@@ -7,10 +7,10 @@ use_ok('Nagios::MKLivestatus::Class::Table::Hosts');
 
 my @testings = (
     # normal query with 3 ands
-    {
+    [
         state => { '='  => 1 },
         name  => { '!=' => [ qw/localhost router/] },
-    },
+    ],
     [   "Filter: state = 1",
         "Filter: name = localhost",
         "Filter: name = router" 
@@ -29,13 +29,13 @@ my @testings = (
     ],
 
     # normal or query
-    {
+    [
         -or => [
           state => { '='  => 0 },
           state => { '='  => 1 },
         ],
         group => { '>=' => 'linux' }
-    },
+    ],
     [   "Filter: state = 0",
         "Filter: state = 1",
         "Or: 2",
@@ -43,7 +43,7 @@ my @testings = (
     ],
 
     # cascaded query
-    {
+    [
         -and => [
             -or => [
               state => { '='  => 0 },
@@ -51,7 +51,7 @@ my @testings = (
             ],
             group => { '>=' => 'linux' }
         ],
-    },
+    ],
     [   "Filter: state = 0",
         "Filter: state = 1",
         "Or: 2",
