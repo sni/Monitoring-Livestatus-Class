@@ -325,6 +325,8 @@ sub _dispatch_refkind {
 
     my $type = $self->_refkind($value);
     my $coderef = $dispatch_table->{$type};
+    die sprintf("No coderef for %s ( %s ) found!",$value, $type)
+        unless ( ref $coderef eq 'CODE' );
     return $coderef->();
 }
 
