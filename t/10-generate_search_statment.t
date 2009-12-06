@@ -12,6 +12,10 @@ my @testings = (
         { name => 'localhost' },
         { name => 'router' },
     ], [ "Filter: name = localhost", "Filter: name = router" ],
+    [
+        state => 1,
+        name  => [ qw/localhost router/] ,
+    ],[ "Filter: state = 1", "Filter: name = localhost", "Filter: name = router" ],
     # not supported at the moment
     # { name => { '-or' => [ qw/localhost router/] } },[ "Filter: name = localhost", "Filter: name = router" ],
     # Simple operator tests

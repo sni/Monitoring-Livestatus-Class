@@ -182,10 +182,11 @@ sub _cond_ARRAYREF {
     my $logic = shift;
     my ( @all_statment );
 
-    foreach my $cond ( @{ $conds } ){
+    while ( my $cond = shift @{ $conds } ){
         my ( @statment ) = $self->_dispatch_refkind($cond, {
           HASHREF   => sub { $self->_recurse_cond($cond, 'and') },
           UNDEF     => sub { croak "not supported : UNDEF in arrayref" },
+          SCALAR    => sub { $self->_recurse_cond( { $cond => shift(@{ $conds }) } , 'and' ) },
         });
         push @all_statment, @statment;
     }
