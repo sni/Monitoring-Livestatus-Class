@@ -339,6 +339,7 @@ sub _cond_compining {
     my $value = shift;
     my $combining_count = shift || 0;
     print STDERR "#IN _cond_compining $combining $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
+    $combining_count++;
     my @statment = ();
 
     if ( defined $combining and $combining =~ /^-/ ){
