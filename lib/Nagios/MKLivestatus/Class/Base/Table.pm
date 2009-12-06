@@ -186,11 +186,12 @@ sub _cond_ARRAYREF {
 
     my $child_combining_count = 0;
     my @child_statment = ();
-    while ( my $cond = shift @{ $conds } ){
+    my @cp_conds = @{ $conds }; # work with a copy
+    while ( my $cond = shift @cp_conds ){
         my ( $child_combining_count, @child_statment ) = $self->_dispatch_refkind($cond, {
             HASHREF   => sub { $self->_recurse_cond($cond, $combining_count) },
             UNDEF     => sub { croak "not supported : UNDEF in arrayref" },
-            SCALAR    => sub { $self->_recurse_cond( { $cond => shift(@{ $conds }) } , $combining_count ) },
+            SCALAR    => sub { $self->_recurse_cond( { $cond => shift(@cp_conds) } , $combining_count ) },
         });
         push @statment, @child_statment;
         # $combining_count += $child_combining_count;
@@ -210,7 +211,7 @@ sub _cond_HASHREF {
     my $self = shift;
     my $cond = shift;
     my $combining_count = shift || 0;
-    print STDERR "#IN _cond_HASHREF $combining_count $cond\n" if $Nagios::MKLivestatus::Class::TRACE;
+    print STDERR "#IN _cond_HASHREF $cond $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
 
     my @all_statment = ();
     my $child_combining_count = 0;
@@ -223,6 +224,7 @@ sub _cond_HASHREF {
         if ( $key =~ /^-/ ){
             # Child key for combining filters ( -and / -or )
             ( $child_combining_count, @child_statment ) = $self->_cond_compining($key, $value, $combining_count);
+            # $combining_count += $child_combining_count;
             $combining_count++;
         } else{
             $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$value);
@@ -233,7 +235,7 @@ sub _cond_HASHREF {
 
         push @all_statment, @child_statment;
     }
-    print STDERR "#OUT _cond_HASHREF $combining_count $cond\n" if $Nagios::MKLivestatus::Class::TRACE;
+    print STDERR "#OUT _cond_HASHREF $cond $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     return ( $combining_count, @all_statment );
 }
 
@@ -347,7 +349,7 @@ sub _cond_compining {
     my ( $child_combining_count, @child_statment )= $self->_recurse_cond($value, 0 );
     push @statment, @child_statment;
     push @statment, sprintf("%s: %d",$combining,$child_combining_count) if ( defined $combining );
-    print STDERR "#OUT _cond_compining $combining $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
+    print STDERR "#OUT _cond_compining $combining $combining_count \n" if $Nagios::MKLivestatus::Class::TRACE;
     return ( $combining_count, @statment );
 }
 
