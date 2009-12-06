@@ -188,13 +188,14 @@ sub _cond_ARRAYREF {
     my @child_statment = ();
     while ( my $cond = shift @{ $conds } ){
         my ( $child_combining_count, @child_statment ) = $self->_dispatch_refkind($cond, {
-          HASHREF   => sub { $self->_recurse_cond($cond, $combining_count) },
-          UNDEF     => sub { croak "not supported : UNDEF in arrayref" },
-          SCALAR    => sub { $self->_recurse_cond( { $cond => shift(@{ $conds }) } , $combining_count ) },
+            HASHREF   => sub { $self->_recurse_cond($cond, $combining_count) },
+            UNDEF     => sub { croak "not supported : UNDEF in arrayref" },
+            SCALAR    => sub { $self->_recurse_cond( { $cond => shift(@{ $conds }) } , $combining_count ) },
         });
         push @statment, @child_statment;
         # $combining_count += $child_combining_count;
-        $combining_count++;
+        # $combining_count++;
+        $combining_count = $child_combining_count;
     }
     print STDERR "#OUT _cond_ARRAYREF $conds $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     return ( $combining_count, @statment );
@@ -226,7 +227,8 @@ sub _cond_HASHREF {
         } else{
             $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$value);
             ( $child_combining_count, @child_statment ) = $self->$method($key, $value);
-            $combining_count += $child_combining_count;
+            $combining_count = $child_combining_count;
+            # $combining_count += $child_combining_count;
         }
 
         push @all_statment, @child_statment;
