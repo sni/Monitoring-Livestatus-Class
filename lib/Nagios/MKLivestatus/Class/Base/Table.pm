@@ -190,7 +190,7 @@ sub _cond_ARRAYREF {
         my ( $child_combining_count, @child_statment ) = $self->_dispatch_refkind($cond, {
           HASHREF   => sub { $self->_recurse_cond($cond, $combining_count) },
           UNDEF     => sub { croak "not supported : UNDEF in arrayref" },
-          SCALAR    => sub { $self->_recurse_cond( { $cond => shift(@{ $conds }) } , 'and' ) },
+          SCALAR    => sub { $self->_recurse_cond( { $cond => shift(@{ $conds }) } , $combining_count ) },
         });
         push @statment, @child_statment;
         # $combining_count += $child_combining_count;
