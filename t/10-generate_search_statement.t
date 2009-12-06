@@ -14,11 +14,11 @@ my @testings = (
     ], [ "Filter: name = localhost", "Filter: name = router" ],
     # not supported at the moment
     { name => { '-or' => [ qw/localhost router/] } },[ "Filter: name = localhost", "Filter: name = router", "Or: 2" ],
-    { '-or' => {
+    { '-or' => [
             scheduled_downtime_depth => { '>' => '0' },
             host_scheduled_downtime_depth => { '>' => '0'},
-        }
-    },['Filter: host_scheduled_downtime_depth > 0','Filter: scheduled_downtime_depth > 0','Or: 2'],
+        ]
+    },['Filter: scheduled_downtime_depth > 0','Filter: host_scheduled_downtime_depth > 0','Or: 2'],
     {
         '-or' => {
             '-and' => { state => '2', acknowledged => '1', },

@@ -12,8 +12,8 @@ my @testings = (
         name  => { '!=' => [ qw/localhost router/] },
     ],
     [   "Filter: state = 1",
-        "Filter: name = localhost",
-        "Filter: name = router" 
+        "Filter: name != localhost",
+        "Filter: name != router" 
     ],
 
     # simple or query
