@@ -160,7 +160,7 @@ sub _recurse_cond {
     print STDERR "#IN _recurse_cond $cond $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     my $method = $self->_METHOD_FOR_refkind("_cond",$cond);
     my ( $child_combining_count, @statment ) = $self->$method($cond,$combining_count);
-    $combining_count += $child_combining_count;
+    $combining_count = $child_combining_count;
     print STDERR "#OUT _recurse_cond $cond $combining_count ( $method )\n" if $Nagios::MKLivestatus::Class::TRACE;
     return ( $combining_count, @statment );
 }
@@ -224,11 +224,11 @@ sub _cond_HASHREF {
         if ( $key =~ /^-/ ){
             # Child key for combining filters ( -and / -or )
             ( $child_combining_count, @child_statment ) = $self->_cond_compining($key, $value, $combining_count);
-            # $combining_count += $child_combining_count;
-            $combining_count++;
+            $combining_count = $child_combining_count;
+            # $combining_count++;
         } else{
             $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$value);
-            ( $child_combining_count, @child_statment ) = $self->$method($key, $value);
+            ( $child_combining_count, @child_statment ) = $self->$method($key, $value, undef ,$combining_count);
             $combining_count = $child_combining_count;
             # $combining_count += $child_combining_count;
         }
