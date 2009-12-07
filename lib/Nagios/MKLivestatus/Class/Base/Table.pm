@@ -194,8 +194,6 @@ sub _cond_ARRAYREF {
             SCALAR    => sub { $self->_recurse_cond( { $cond => shift(@cp_conds) } , $combining_count ) },
         });
         push @statment, @child_statment;
-        # $combining_count += $child_combining_count;
-        # $combining_count++;
         $combining_count = $child_combining_count;
     }
     print STDERR "#OUT _cond_ARRAYREF $conds $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
@@ -225,12 +223,10 @@ sub _cond_HASHREF {
             # Child key for combining filters ( -and / -or )
             ( $child_combining_count, @child_statment ) = $self->_cond_compining($key, $value, $combining_count);
             $combining_count = $child_combining_count;
-            # $combining_count++;
         } else{
             $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$value);
             ( $child_combining_count, @child_statment ) = $self->$method($key, $value, undef ,$combining_count);
             $combining_count = $child_combining_count;
-            # $combining_count += $child_combining_count;
         }
 
         push @all_statment, @child_statment;
@@ -307,7 +303,6 @@ sub _cond_hashpair_HASHREF {
             });
             $combining_count += $child_combining_count;
             push @statment, @child_statment;
-            # croak "$child_key not supported yet...";
         } elsif ( $child_key =~ /^[!<>=~]/ ){
             # Child key is a operator like:
             # =     equality
