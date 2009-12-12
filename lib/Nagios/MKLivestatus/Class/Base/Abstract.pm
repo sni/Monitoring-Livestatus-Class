@@ -4,38 +4,30 @@ package # hide from pause
 use Moose;
 use Carp;
 
-=head1 NAME
-
-Nagios::MKLivestatus::Class::Base::Abstract
-
-=head2 SYNOPSIS
-
-=head1 ATTRIBUTES
-
-=head2 ctx
-
-Reference to context object L<Nagios::MKLivestatus::Class>
-
-=cut
 
 has 'ctx' => (
     is => 'rw',
     handles => [qw/table_name backend_obj/],
 );
 
-=head1 METHODS
+has 'mode' => (
+    is => 'ro',
+    isa => 'Str',
+    builder => 'build_mode',
+);
 
-=head2 apply
+sub build_mode { die "build_mode must be implemented in " . ref(shift) };
 
-Example usage:
+has 'compining_prefix' => (
+    is => 'ro',
+    isa => 'Str',
+    builder => 'build_compining_prefix',
+);
 
-    $table_obj->search( { name => 'localhost' } );
-    $table_obj->search( { name => [ 'localhost', 'gateway' ] } );
-    $table_obj->search( [ { name => 'localhost' }, { name => 'gateway' } ] );
+sub build_compining_prefix { return ''; };
 
-Returns: @statments|\@statments
 
-=cut
+
 sub apply {
     my $self = shift;
     my $cond = shift;
@@ -44,16 +36,6 @@ sub apply {
 
     return wantarray ? @statments : \@statments;
 }
-
-=head1 INTERNAL METHODS
-
-=over 4
-
-=item _execute
-
-_execute....
-
-=cut
 
 sub _execute {
     my $self = shift;
@@ -75,11 +57,6 @@ sub _execute {
     return wantarray ? @{ $return }  : $return;
 }
 
-=item _recurse_cond
-
-_recurse_cond....
-
-=cut
 sub _recurse_cond {
     my $self = shift;
     my $cond = shift;
@@ -92,18 +69,8 @@ sub _recurse_cond {
     return ( $combining_count, @statment );
 }
 
-=item _cond_UNDEF
-
-_cond_UNDEF....
-
-=cut
 sub _cond_UNDEF { return ( () ); }
 
-=item _cond_ARRAYREF
-
-_cond_ARRAYREF....
-
-=cut
 sub _cond_ARRAYREF {
     my $self = shift;
     my $conds = shift;
@@ -127,11 +94,6 @@ sub _cond_ARRAYREF {
     return ( $combining_count, @statment );
 }
 
-=item _cond_HASHREF
-
-_cond_HASHREF....
-
-=cut
 sub _cond_HASHREF {
     my $self = shift;
     my $cond = shift;
@@ -162,11 +124,6 @@ sub _cond_HASHREF {
     return ( $combining_count, @all_statment );
 }
 
-=item _cond_hashpair_SCALAR
-
-_cond_hashpair_SCALAR....
-
-=cut
 sub _cond_hashpair_SCALAR {
     my $self = shift;
     my $key = shift || '';
@@ -176,17 +133,12 @@ sub _cond_hashpair_SCALAR {
 
     my $combining_count = shift || 0;
     my @statment = (
-        sprintf("Filter: %s %s %s",$key,$operator,$value)
+        sprintf("%s: %s %s %s",$self->mode,$key,$operator,$value)
     );
     $combining_count++;
     return ( $combining_count, @statment );
 };
 
-=item _cond_hashpair_ARRAYREF
-
-_cond_hashpair_ARRAYREF....
-
-=cut
 sub _cond_hashpair_ARRAYREF {
     my $self = shift;
     my $key = shift || '';
@@ -197,18 +149,13 @@ sub _cond_hashpair_ARRAYREF {
 
     my @statment = ();
     foreach my $value ( @{ $values }){
-        push @statment, sprintf("Filter: %s %s %s",$key,$operator,$value);
+        push @statment, sprintf("%s: %s %s %s",$self->mode,$key,$operator,$value);
         $combining_count++;
     }
     print STDERR "#OUT _cond_hashpair_ARRAYREF $combining_count\n" if $Nagios::MKLivestatus::Class::TRACE;
     return ( $combining_count, @statment );
 }
 
-=item _cond_hashpair_HASHREF
-
-_cond_hashpair_HASHREF....
-
-=cut
 sub _cond_hashpair_HASHREF {
     my $self = shift;
     my $key = shift || '';
@@ -276,11 +223,6 @@ sub _cond_compining {
     return ( $combining_count, @statment );
 }
 
-=item _refkind
-
-_refkind....
-
-=cut
 sub _refkind {
   my ($self, $data) = @_;
   my $suffix = '';
@@ -301,11 +243,6 @@ sub _refkind {
   return $base . ('REF' x $n_steps);
 }
 
-=item _dispatch_refkind
-
-_dispatch_refkind....
-
-=cut
 sub _dispatch_refkind {
     my $self = shift;
     my $value = shift;
@@ -318,13 +255,6 @@ sub _dispatch_refkind {
     return $coderef->();
 }
 
-=item _METHOD_FOR_refkind
-
-_METHOD_FOR_refkind....
-
-=back
-
-=cut
 sub _METHOD_FOR_refkind {
     my $self = shift;
     my $prefix = shift || '';
@@ -334,6 +264,69 @@ sub _METHOD_FOR_refkind {
     return $method;
 }
 
+
+
+1;
+__END__
+=head1 NAME
+
+Nagios::MKLivestatus::Class::Base::Abstract
+
+=head2 SYNOPSIS
+
+=head1 ATTRIBUTES
+
+=head2 ctx
+
+Reference to context object L<Nagios::MKLivestatus::Class>
+
+=head2 mode
+
+=head2 compining_prefix
+
+=head1 METHODS
+
+=head2 apply
+
+Example usage:
+
+    $table_obj->search( { name => 'localhost' } );
+    $table_obj->search( { name => [ 'localhost', 'gateway' ] } );
+    $table_obj->search( [ { name => 'localhost' }, { name => 'gateway' } ] );
+
+Returns: @statments|\@statments
+
+=head2 build_mode
+
+=head2 build_compining_prefix
+
+=head1 INTERNAL METHODS
+
+=over 4
+
+=item _execute
+
+=item _recurse_cond
+
+=item _cond_UNDEF
+
+=item _cond_ARRAYREF
+
+=item _cond_HASHREF
+
+=item _cond_hashpair_SCALAR
+
+=item _cond_hashpair_ARRAYREF
+
+=item _cond_hashpair_HASHREF
+
+=item _refkind
+
+=item _dispatch_refkind
+
+=item _METHOD_FOR_refkind
+
+=back
 
 =head1 AUTHOR
 
@@ -350,5 +343,3 @@ by the Free Software Foundation; or the Artistic License.
 See http://dev.perl.org/licenses/ for more information.
 
 =cut
-
-1;

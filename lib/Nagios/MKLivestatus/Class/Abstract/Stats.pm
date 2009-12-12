@@ -1,11 +1,12 @@
-package Nagios::MKLivestatus::Class::Abstract::Filter;
+package Nagios::MKLivestatus::Class::Abstract::Stats;
 
 use Moose;
 use Carp;
 extends 'Nagios::MKLivestatus::Class::Base::Abstract';
 
-sub build_mode { return 'Filter'; };
+sub build_mode { return 'Stats'; };
 
+sub build_compining_prefix { return 'Stats'; }
 
 1;
 __END__
@@ -20,6 +21,8 @@ Nagios::MKLivestatus::Class::Base::Abstract
 =head1 METHODS
 
 =head2 build_mode
+
+=head2 build_compining_prefix
 
 =head1 AUTHOR
 
