@@ -9,8 +9,7 @@ unless ( $ENV{NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER} ) {
 use_ok('Nagios::MKLivestatus::Class');
 use Nagios::MKLivestatus::Class;
 my $class = Nagios::MKLivestatus::Class->new(
-    backend => 'INET',
-    socket => $ENV{NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER},
+    peer => $ENV{NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER},
 );
 my $hosts = $class->table('hosts');
 

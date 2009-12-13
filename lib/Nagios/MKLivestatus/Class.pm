@@ -9,19 +9,11 @@ our $VERSION = '0.01';
 our $TRACE = $ENV{'NAGIOS_MKLIVESTATUS_CLASS_TRACE'} || 0;
 
 
-has 'socket' => (
+has 'peer' => (
     is       => 'rw',
     isa      => 'Str',
     required => 1,
 );
-
-
-has 'backend' => (
-    is       => 'rw',
-    isa      => 'Str',
-    required => 1,
-);
-
 
 has 'backend_obj' => (
     is       => 'ro',
@@ -33,9 +25,9 @@ sub BUILD {
     # Load all Modules 
     useall Nagios::MKLivestatus::Class::Table;
 
-    my $backend = sprintf 'Nagios::MKLivestatus::%s', $self->{backend};
+    my $backend = sprintf 'Nagios::MKLivestatus';
     Class::MOP::load_class($backend);
-    $self->{backend_obj} = $backend->new( $self->{socket} );
+    $self->{backend_obj} = $backend->new( peer => $self->{peer} );
 }
 
 

@@ -7,7 +7,7 @@ license  'perl';
 
 requires 'Moose';
 requires 'Module::Find';
-requires 'Nagios::MKLivestatus' => '0.24';
+requires 'Nagios::MKLivestatus' => '0.28';
 
 build_requires 'Test::More';
 
