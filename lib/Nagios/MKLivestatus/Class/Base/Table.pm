@@ -18,7 +18,7 @@ has 'filter_obj' => (
     is => 'ro',
     isa => 'Nagios::MKLivestatus::Class::Abstract::Filter',
     builder => '_build_filter',
-    handles => { apply_filer => 'apply', _execute => '_execute' },
+    handles => { apply_filer => 'apply' },
 );
 
 sub _build_filter { return Nagios::MKLivestatus::Class::Abstract::Filter->new( ctx => shift ); };
@@ -83,6 +83,24 @@ sub hashref_array {
 
     my @data =  $self->_execute( @statments );
     return wantarray ? @data : \@data;
+}
+
+sub _execute {
+    my $self = shift;
+    my @data = @_;
+
+    my @statments = ();
+    push @statments, sprintf("GET %s",$self->table_name);
+    push @statments, @data;
+
+    printf STDERR "EXECUTE: %s\n", join("\nEXECUTE: ",@statments)
+        if $Nagios::MKLivestatus::Class::TRACE >= 1;
+
+    my $statment = join("\n",@statments);
+
+    my $return = $self->backend_obj->selectall_arrayref($statment, { slice => {} });
+
+    return wantarray ? @{ $return }  : $return;
 }
 
 1;
