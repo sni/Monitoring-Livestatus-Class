@@ -5,8 +5,6 @@ use Moose;
 use Carp;
 
 use Nagios::MKLivestatus::Class::Abstract::Filter;
-use Data::Dumper::Names;
-
 
 
 has 'ctx' => (
@@ -53,7 +51,6 @@ sub columns {
     $self->_columns( \@columns );
     return $self;
 }
-
 
 sub headers{
     my $self = shift;
