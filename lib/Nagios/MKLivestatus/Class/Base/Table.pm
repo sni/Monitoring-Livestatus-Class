@@ -74,7 +74,7 @@ sub filter {
 
 sub hashref_array {
     my $self = shift;
-    use Data::Dumper;
+
     my @statments = ();
     if ( scalar @{ $self->_columns } > 0 ){
         push @statments, sprintf('Columns: %s',join(' ',@{  $self->_columns  }));
