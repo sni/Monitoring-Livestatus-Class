@@ -82,12 +82,12 @@ sub build_table_name {
     die "build_table_name must be implemented in " . ref(shift)
 }
 
-=head2 columns
+=head2 headers
 
 Returns a array or reference to array, depending on the calling context, of all header columns.
 
 =cut
-sub columns{
+sub headers{
     my $self = shift;
 
     my $statment = sprintf("GET %s\nLimit: 1",$self->table_name);
