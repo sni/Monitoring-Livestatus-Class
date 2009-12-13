@@ -6,6 +6,67 @@ use Carp;
 
 use Nagios::MKLivestatus::Class::Abstract::Filter;
 use Data::Dumper::Names;
+
+
+
+has 'ctx' => (
+    is => 'rw',
+    isa => 'Nagios::MKLivestatus::Class',
+    handles => [qw/backend_obj/],
+);
+
+
+has 'filter_obj' => (
+    is => 'ro',
+    isa => 'Nagios::MKLivestatus::Class::Abstract::Filter',
+    builder => '_build_filter',
+    handles => { apply_filer => 'apply', _execute => '_execute' },
+);
+
+sub _build_filter { return Nagios::MKLivestatus::Class::Abstract::Filter->new( ctx => shift ); };
+
+has 'table_name' => (
+    is => 'ro',
+    isa => 'Str',
+    builder  => 'build_table_name',
+);
+
+sub build_table_name { die "build_table_name must be implemented in " . ref(shift) };
+
+has 'statments' => (
+    is => 'rw',
+    isa => 'ArrayRef',
+);
+
+
+sub headers{
+    my $self = shift;
+
+    my $statment = sprintf("GET %s\nLimit: 1",$self->table_name);
+    my ( $hash_ref ) = @{ $self->backend_obj->selectall_arrayref($statment,{ slice => 1}) };
+    my @cols = keys %$hash_ref;
+    return wantarray ? @cols : \@cols;
+}
+
+sub filter {
+    my $self = shift;
+    my $cond = shift;
+
+    my @statments = $self->apply_filer($cond);
+    my @tmp = @{ $self->statments || [] };
+    push @tmp, @statments;
+    $self->statments(\@tmp);
+    return $self;
+}
+
+sub hashref_array {
+    my $self = shift;
+    my @data =  $self->_execute(@{ $self->statments });
+    return wantarray ? @data : \@data;
+}
+
+1;
+__END__
 =head1 NAME
 
 Nagios::MKLivestatus::Class::Base::Table - Base class for all table objects.
@@ -27,74 +88,25 @@ Nagios::MKLivestatus::Class::Base::Table - Base class for all table objects.
 
 Reference to context object L<Nagios::MKLivestatus::Class>
 
-=cut
-
-has 'ctx' => (
-    is => 'rw',
-    isa => 'Nagios::MKLivestatus::Class',
-    handles => [qw/backend_obj/],
-);
-
 =head2 filter
 
 Reference to filter object L<Nagios::MKLivestatus::Class>
-
-=cut
-
-has 'filter_obj' => (
-    is => 'ro',
-    isa => 'Nagios::MKLivestatus::Class::Abstract::Filter',
-    builder => '_build_filter',
-    handles => { apply_filer => 'apply', _execute => '_execute' },
-);
-
-sub _build_filter { return Nagios::MKLivestatus::Class::Abstract::Filter->new( ctx => shift ); }
 
 =head2 table_name
 
 Containts the table name.
 
-=cut
-
-has 'table_name' => (
-    is => 'ro',
-    isa => 'Str',
-    builder  => 'build_table_name',
-);
-
 =head2 statments
 
 Containts the all statments.
-
-=cut
-has 'statments' => (
-    is => 'rw',
-    isa => 'ArrayRef',
-);
 
 =head1 METHODS
 
 =head2 build_table_name
 
-=cut
-
-sub build_table_name {
-    die "build_table_name must be implemented in " . ref(shift)
-}
-
 =head2 headers
 
 Returns a array or reference to array, depending on the calling context, of all header columns.
-
-=cut
-sub headers{
-    my $self = shift;
-
-    my $statment = sprintf("GET %s\nLimit: 1",$self->table_name);
-    my ( $hash_ref ) = @{ $self->backend_obj->selectall_arrayref($statment,{ slice => 1}) };
-    my @cols = keys %$hash_ref;
-    return wantarray ? @cols : \@cols;
-}
 
 =head2 filter
 
@@ -106,18 +118,6 @@ Example usage:
 
 Returns: $self
 
-=cut
-sub filter {
-    my $self = shift;
-    my $cond = shift;
-
-    my @statments = $self->apply_filer($cond);
-    my @tmp = @{ $self->statments || [] };
-    push @tmp, @statments;
-    $self->statments(\@tmp);
-    return $self;
-}
-
 =head2 hashref_array
 
 Returns a array or reference to array, depending on the calling context.
@@ -126,14 +126,6 @@ Example usage:
 
     my $hashref_array = $table_obj->search( { } )->hashref_array;
     print Dumper $hashref_array;
-
-=cut
-sub hashref_array {
-    my $self = shift;
-    my @data =  $self->_execute(@{ $self->statments });
-    return wantarray ? @data : \@data;
-}
-
 
 =head1 AUTHOR
 
