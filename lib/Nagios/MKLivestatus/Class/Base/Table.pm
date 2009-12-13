@@ -33,10 +33,26 @@ has 'table_name' => (
 
 sub build_table_name { die "build_table_name must be implemented in " . ref(shift) };
 
-has 'statments' => (
+has '_statments' => (
+    is => 'rw',
+    reader => 'statments',
+    isa => 'ArrayRef',
+    default => sub { return []; }
+);
+
+
+has '_columns' => (
     is => 'rw',
     isa => 'ArrayRef',
+    default => sub { return []; }
 );
+
+sub columns {
+    my $self = shift;
+    my @columns = @_ ;
+    $self->_columns( \@columns );
+    return $self;
+}
 
 
 sub headers{
@@ -55,13 +71,20 @@ sub filter {
     my @statments = $self->apply_filer($cond);
     my @tmp = @{ $self->statments || [] };
     push @tmp, @statments;
-    $self->statments(\@tmp);
+    $self->_statments(\@tmp);
     return $self;
 }
 
 sub hashref_array {
     my $self = shift;
-    my @data =  $self->_execute(@{ $self->statments });
+    use Data::Dumper;
+    my @statments = ();
+    if ( scalar @{ $self->_columns } > 0 ){
+        push @statments, sprintf('Columns: %s',join(' ',@{  $self->_columns  }));
+    }
+    push @statments, @{ $self->statments };
+
+    my @data =  $self->_execute( @statments );
     return wantarray ? @data : \@data;
 }
 
@@ -102,7 +125,13 @@ Containts the all statments.
 
 =head1 METHODS
 
-=head2 build_table_name
+=head2 columns
+
+Arguments: $colA, $colB, ...
+
+Return: $self
+
+Set columns...
 
 =head2 headers
 
@@ -126,6 +155,9 @@ Example usage:
 
     my $hashref_array = $table_obj->search( { } )->hashref_array;
     print Dumper $hashref_array;
+
+
+=head2 build_table_name
 
 =head1 AUTHOR
 
