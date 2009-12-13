@@ -5,7 +5,7 @@ use Moose;
 use Carp;
 
 use Nagios::MKLivestatus::Class::Abstract::Filter;
-
+use Nagios::MKLivestatus::Class::Abstract::Stats;
 
 has 'ctx' => (
     is => 'rw',
@@ -13,7 +13,9 @@ has 'ctx' => (
     handles => [qw/backend_obj/],
 );
 
-
+# 
+#  Filter Stuff
+#  
 has 'filter_obj' => (
     is => 'ro',
     isa => 'Nagios::MKLivestatus::Class::Abstract::Filter',
@@ -22,6 +24,43 @@ has 'filter_obj' => (
 );
 
 sub _build_filter { return Nagios::MKLivestatus::Class::Abstract::Filter->new( ctx => shift ); };
+
+sub filter {
+    my $self = shift;
+    my $cond = shift;
+
+    my @statments = $self->apply_filer($cond);
+    my @tmp = @{ $self->statments || [] };
+    push @tmp, @statments;
+    $self->_statments(\@tmp);
+    return $self;
+}
+
+# 
+#  Stats Stuff
+# 
+has 'stats_obj' => (
+    is => 'ro',
+    isa => 'Nagios::MKLivestatus::Class::Abstract::Stats',
+    builder => '_build_stats',
+    handles => { apply_stats => 'apply' },
+);
+
+sub _build_stats { return Nagios::MKLivestatus::Class::Abstract::Stats->new( ctx => shift ); };
+
+sub stats {
+    my $self = shift;
+    my $cond = shift;
+
+    my @statments = $self->apply_stats($cond);
+    my @tmp = @{ $self->statments || [] };
+    push @tmp, @statments;
+    $self->_statments(\@tmp);
+    return $self;
+}
+
+
+
 
 has 'table_name' => (
     is => 'ro',
@@ -59,17 +98,6 @@ sub headers{
     my ( $hash_ref ) = @{ $self->backend_obj->selectall_arrayref($statment,{ slice => 1}) };
     my @cols = keys %$hash_ref;
     return wantarray ? @cols : \@cols;
-}
-
-sub filter {
-    my $self = shift;
-    my $cond = shift;
-
-    my @statments = $self->apply_filer($cond);
-    my @tmp = @{ $self->statments || [] };
-    push @tmp, @statments;
-    $self->_statments(\@tmp);
-    return $self;
 }
 
 sub hashref_array {
@@ -127,6 +155,10 @@ Nagios::MKLivestatus::Class::Base::Table - Base class for all table objects.
 Reference to context object L<Nagios::MKLivestatus::Class>
 
 =head2 filter
+
+Reference to filter object L<Nagios::MKLivestatus::Class>
+
+=head2 stats
 
 Reference to filter object L<Nagios::MKLivestatus::Class>
 
