@@ -3,3 +3,5 @@ TODO
 
 * Add some POD :-)
 * Add timeout 
+* Implements PEER parameter from mklivestatus
+* move _execute from Abstract.pm into other class
