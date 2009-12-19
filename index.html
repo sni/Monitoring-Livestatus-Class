@@ -1,80 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-	<title>rbo/Nagios-MKLivestatus-Class @ GitHub</title>
-	
-	<style type="text/css">
-		body {
-  		margin-top: 1.0em;
-  		background-color: #92cbf5;
-		  font-family: "Helvetica,Arial,FreeSans"; 
-  		color: #000000;
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>MyProject's Libraries</title>
+<link rel="stylesheet" type="text/css" href="podstyle.css" />
+<script type="text/javascript">
+//<![CDATA[
+var managers = [{"records":[{"name":"Nagios-MKLivestatus-Class","title":"The great new Nagios::MKLivestatus::Class!","path":"Nagios/MKLivestatus/Class.pm.html"},{"name":"Nagios-MKLivestatus-Class-Abstract-Filter","title":"","path":"Nagios/MKLivestatus/Class/Abstract/Filter.pm.html"},{"name":"Nagios-MKLivestatus-Class-Abstract-Stats","title":"","path":"Nagios/MKLivestatus/Class/Abstract/Stats.pm.html"},{"name":"Nagios-MKLivestatus-Class-Base-Abstract","title":"","path":"Nagios/MKLivestatus/Class/Base/Abstract.pm.html"},{"name":"Nagios-MKLivestatus-Class-Base-Table","title":"","path":"Nagios/MKLivestatus/Class/Base/Table.pm.html"},{"name":"Nagios-MKLivestatus-Class-Table-Columns","title":"Class for columns table","path":"Nagios/MKLivestatus/Class/Table/Columns.pm.html"},{"name":"Nagios-MKLivestatus-Class-Table-Contacts","title":"Class for contacts table","path":"Nagios/MKLivestatus/Class/Table/Contacts.pm.html"},{"name":"Nagios-MKLivestatus-Class-Table-Downtimes","title":"","path":"Nagios/MKLivestatus/Class/Table/Downtimes.pm.html"},{"name":"Nagios-MKLivestatus-Class-Table-Hostgroups","title":"","path":"Nagios/MKLivestatus/Class/Table/Hostgroups.pm.html"},{"name":"Nagios-MKLivestatus-Class-Table-Hosts","title":"","path":"Nagios/MKLivestatus/Class/Table/Hosts.pm.html"},{"name":"Nagios-MKLivestatus-Class-Table-Servicegroups","title":"","path":"Nagios/MKLivestatus/Class/Table/Servicegroups.pm.html"},{"name":"Nagios-MKLivestatus-Class-Table-Services","title":"","path":"Nagios/MKLivestatus/Class/Table/Services.pm.html"},{"name":"Nagios-MKLivestatus-Class-Table-Status","title":"","path":"Nagios/MKLivestatus/Class/Table/Status.pm.html"}],"desc":"Perl Modules"}];
+function render(pattern) {
+    var html = '';
+    for ( var i = 0; i < managers.length; i++ ) {
+        var manager   = managers[i];
+        var rows_html = get_rows_html(manager, pattern);
+        var listbox = "<div class='box'><h2 class='t2'>"
+                    + manager.desc
+                    + "</h2><table width='100%'>"
+                    + rows_html
+                    + "</table></div>";
+        html += listbox;
     }
-    #container {
-      margin: 0 auto;
-      width: 700px;
+    var list = document.getElementById('list');
+    list.innerHTML = html;
+}
+function get_rows_html (manager, pattern) {
+    var html   = '';
+    var regexp = new RegExp( "(" + pattern + ")", "gi");
+    var seq    = 0;
+    for (var i = 0; i < manager.records.length; i++) {
+        var record = manager.records[i];
+        if ( record.name.match(regexp) ) {
+            var module_name = manager.records[i].name;
+            if(pattern != '' ) {
+                var replace_text = "<span class='search_highlight'>$1</span>";
+                module_name = module_name.replace(regexp, replace_text);
+            }
+            html += get_record_html(record, module_name, seq);
+            seq++;
+        }
     }
-		h1 { font-size: 3.8em; color: #6d340a; margin-bottom: 3px; }
-		h1 .small { font-size: 0.4em; }
-		h1 a { text-decoration: none }
-		h2 { font-size: 1.5em; color: #6d340a; }
-    h3 { text-align: center; color: #6d340a; }
-    a { color: #6d340a; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-		pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-	</style>
-	
+    return html;
+}
+function get_record_html (record, name, i) {
+    var row_class  = ( i % 2 == 0 ) ? 'r' : 's';
+    var row_html   = "<tr class='"
+                   + row_class
+                   + "'><td nowrap='nowrap'><a href='"
+                   + record.path
+                   + "'>"
+                   + name + "</a></td><td width='99%'><small>"
+                   + record.title
+                   + "</small></td></tr>";
+    return row_html;
+}
+//]]>
+</script>
 </head>
+<body onload="render('')">
+<div class="box">
+  <h1 class="t1">MyProject's Libraries</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">manuals and libraries</td>
+    </tr>
+  </table>
+</div>
 
-<body>
-  <a href="http://github.com/rbo/Nagios-MKLivestatus-Class"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
-  
-  <div id="container">
+<div class="box">
+  <h2 class="t2">Search</h2>
+  <table>
+    <tr>
+       <td class="cell"><input type="text" size="60" onkeyup="render(this.value)" /></td>
+    </tr>
+  </table>
+</div>
 
-    <div class="download">
-      <a href="http://github.com/rbo/Nagios-MKLivestatus-Class/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/rbo/Nagios-MKLivestatus-Class/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
-    </div>
-      
-    <h1><a href="http://github.com/rbo/Nagios-MKLivestatus-Class">Nagios-MKLivestatus-Class</a> 
-      <span class="small">by <a href="http://github.com/rbo">rbo</a></span></h1>
-
-    <div class="description">
-      OOP version of Nagios::MKLivestatus
-    </div>
-
-    <h2>Authors</h2>
-<p>Robert Bohne (rbo@cpan.org)<br/><br/>      </p>
-<h2>Contact</h2>
-<p>Robert Bohne (rbo@cpan.org)<br/>      </p>
+<div id="list">
+</div>
 
 
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/rbo/Nagios-MKLivestatus-Class/zipball/master">zip</a> or
-      <a href="http://github.com/rbo/Nagios-MKLivestatus-Class/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/rbo/Nagios-MKLivestatus-Class</pre>
-    </p>
-      
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/rbo/Nagios-MKLivestatus-Class">rbo/Nagios-MKLivestatus-Class</a>
-    </div>
-    
-  </div>
-
-  
+<div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div>
 </body>
 </html>

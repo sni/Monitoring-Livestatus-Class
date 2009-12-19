@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Nagios::MKLivestatus::Class</title>
+<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">MyProject's Libraries</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">manuals and libraries</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">MyProject's Libraries</a> &gt; Perl Modules &gt;
+  Nagios-MKLivestatus-Class
+</div>
+<div>
+<a href="../../src/Nagios/MKLivestatus/Class.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a><br />
+<ul>
+	<li><a href="#socket">socket</a></li>
+	<li><a href="#backend">backend</a><br />
+<ul>
+	<li><a href="#Values">Values:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+	<li><a href="#METHODS">METHODS</a><br />
+<ul>
+	<li><a href="#BUILD">BUILD</a></li>
+	<li><a href="#table">table</a></li>
+</ul>
+</li>
+	<li><a href="#ENVIRONMENT_VARIABLES">ENVIRONMENT VARIABLES</a><br />
+<ul>
+	<li><a href="#NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER">NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER</a></li>
+	<li><a href="#NAGIOS_MKLIVESTATUS_CLASS_TRACE">NAGIOS_MKLIVESTATUS_CLASS_TRACE</a></li>
+</ul>
+</li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#BUGS">BUGS</a></li>
+	<li><a href="#SUPPORT">SUPPORT</a></li>
+	<li><a href="#ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</a></li>
+	<li><a href="#COPYRIGHT_amp_LICENSE">COPYRIGHT &amp; LICENSE</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Nagios::MKLivestatus::Class - The great new Nagios::MKLivestatus::Class!</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+
+
+
+
+
+<p>Perhaps a little code snippet.</p>
+
+<pre>    use Nagios::MKLivestatus::Class;
+
+    my $foo = Nagios::MKLivestatus::Class-&gt;new(
+        backend =&gt; 'INET',
+        socket =&gt; '10.211.55.140:6557',
+    );
+
+</pre><h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<h2 id="socket">socket</h2>
+
+<p>Path to unix socket or host:port</p>
+
+<h2 id="backend">backend</h2>
+
+<h3 id="Values">Values:</h3>
+
+<dl>
+	<dt>Socket</dt>
+	<dt>INET</dt>
+</dl>
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<h2 id="BUILD">BUILD</h2>
+
+<p><a href="#" onclick="toggleCode('method_BUILD');return false;">[Source]</a></p>
+                                        <div class="method-source-code" id="method_BUILD">
+                                        <pre>
+
+sub BUILD {
+    my $self = shift;
+
+    # Load all Modules 
+    useall Nagios::MKLivestatus::Class::Table;
+
+    my $backend = sprintf 'Nagios::MKLivestatus';
+    Class::MOP::load_class($backend);
+    $self->{backend_obj} = $backend->new( peer => $self->{peer} );
+}
+</pre></div>
+
+<p>BUILD Method</p>
+
+<h2 id="table">table</h2>
+
+<p><a href="#" onclick="toggleCode('method_table');return false;">[Source]</a></p>
+                                        <div class="method-source-code" id="method_table">
+                                        <pre>
+
+sub table {
+    my $self = shift;
+    my $table = ucfirst(lc(shift));
+    my $class = sprintf("Nagios::MKLivestatus::Class::Table::%s",$table);
+    return $class->new( ctx => $self );
+}
+</pre></div>
+
+<p>Get table object from ....</p>
+
+<p>Arguments: $scalar</p>
+
+<p>Returns: $table_object</p>
+
+<h1 id="ENVIRONMENT_VARIABLES">ENVIRONMENT VARIABLES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<h2 id="NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER">NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER</h2>
+
+<h2 id="NAGIOS_MKLIVESTATUS_CLASS_TRACE">NAGIOS_MKLIVESTATUS_CLASS_TRACE</h2>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Robert Bohne, <code>&lt;rbo at cpan.org&gt;</code></p>
+
+<h1 id="BUGS">BUGS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Please report any bugs or feature requests to <code>bug-nagios-mklivestatus-class at rt.cpan.org</code>, or through
+the web interface at <a href="http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Nagios-MKLivestatus-Class">http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Nagios-MKLivestatus-Class</a>.  I will be notified, and then you'll
+automatically be notified of progress on your bug as I make changes.</p>
+
+<h1 id="SUPPORT">SUPPORT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>You can find documentation for this module with the perldoc command.</p>
+
+<pre>    perldoc Nagios::MKLivestatus::Class
+
+
+
+
+</pre><p>You can also look for information at:</p>
+
+<dl>
+	<dt>* RT: CPAN's request tracker</dt>
+		<dd><p><a href="http://rt.cpan.org/NoAuth/Bugs.html?Dist=Nagios-MKLivestatus-Class">http://rt.cpan.org/NoAuth/Bugs.html?Dist=Nagios-MKLivestatus-Class</a></p></dd>
+	<dt>* AnnoCPAN: Annotated CPAN documentation</dt>
+		<dd><p><a href="http://annocpan.org/dist/Nagios-MKLivestatus-Class">http://annocpan.org/dist/Nagios-MKLivestatus-Class</a></p></dd>
+	<dt>* CPAN Ratings</dt>
+		<dd><p><a href="http://cpanratings.perl.org/d/Nagios-MKLivestatus-Class">http://cpanratings.perl.org/d/Nagios-MKLivestatus-Class</a></p></dd>
+	<dt>* Search CPAN</dt>
+		<dd><p><a href="http://search.cpan.org/dist/Nagios-MKLivestatus-Class/">http://search.cpan.org/dist/Nagios-MKLivestatus-Class/</a></p></dd>
+</dl>
+
+
+
+<h1 id="ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+
+
+<h1 id="COPYRIGHT_amp_LICENSE">COPYRIGHT &amp; LICENSE <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Copyright 2009 Robert Bohne.</p>
+
+<p>This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.</p>
+
+<p>See http://dev.perl.org/licenses/ for more information.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

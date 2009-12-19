@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title></title>
+<link rel="stylesheet" type="text/css" href="../../../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">MyProject's Libraries</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">manuals and libraries</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../../../index.html">MyProject's Libraries</a> &gt; Perl Modules &gt;
+  Nagios-MKLivestatus-Class-Base-Table
+</div>
+<div>
+<a href="../../../../src/Nagios/MKLivestatus/Class/Base/Table.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+</ul>
+</li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a><br />
+<ul>
+	<li><a href="#ctx">ctx</a></li>
+	<li><a href="#filter">filter</a></li>
+	<li><a href="#stats">stats</a></li>
+	<li><a href="#table_name">table_name</a></li>
+	<li><a href="#statments">statments</a></li>
+</ul>
+</li>
+	<li><a href="#METHODS">METHODS</a><br />
+<ul>
+	<li><a href="#columns">columns</a></li>
+	<li><a href="#headers">headers</a></li>
+	<li><a href="#filter">filter</a></li>
+	<li><a href="#hashref_array">hashref_array</a></li>
+	<li><a href="#build_table_name">build_table_name</a></li>
+</ul>
+</li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#COPYRIGHT_amp_LICENSE">COPYRIGHT &amp; LICENSE</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h2 id="SYNOPSIS">SYNOPSIS</h2>
+
+<pre>    my $class = Nagios::MKLivestatus::Class-&gt;new(
+        backend =&gt; 'INET',
+        socket =&gt; '10.211.55.140:6557',
+    );
+
+    my $table_obj = $class-&gt;table('services');
+
+    my $data = $table_obj-&gt;search( {} )-&gt;hashref_array();
+
+</pre><h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../../../../up.gif" /></a></h1>
+
+<h2 id="ctx">ctx</h2>
+
+<p>Reference to context object <a href="../../Class.pm.html">Nagios::MKLivestatus::Class</a></p>
+
+<h2 id="filter">filter</h2>
+
+<p>Reference to filter object <a href="../../Class.pm.html">Nagios::MKLivestatus::Class</a></p>
+
+<h2 id="stats">stats</h2>
+
+<p>Reference to filter object <a href="../../Class.pm.html">Nagios::MKLivestatus::Class</a></p>
+
+<h2 id="table_name">table_name</h2>
+
+<p>Containts the table name.</p>
+
+<h2 id="statments">statments</h2>
+
+<p>Containts the all statments.</p>
+
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../../../up.gif" /></a></h1>
+
+<h2 id="columns">columns</h2>
+
+<p>Arguments: $colA, $colB, ...</p>
+
+<p>Return: $self</p>
+
+<p>Set columns...</p>
+
+<h2 id="headers">headers</h2>
+
+<p><a href="#" onclick="toggleCode('method_headers');return false;">[Source]</a></p>
+                                        <div class="method-source-code" id="method_headers">
+                                        <pre>
+
+sub headers{
+    my $self = shift;
+
+    my $statment = sprintf("GET %s\nLimit: 1",$self->table_name);
+    my ( $hash_ref ) = @{ $self->backend_obj->selectall_arrayref($statment,{ slice => 1}) };
+    my @cols = keys %$hash_ref;
+    return wantarray ? @cols : \@cols;
+}
+</pre></div>
+
+<p>Returns a array or reference to array, depending on the calling context, of all header columns.</p>
+
+<h2 id="filter">filter</h2>
+
+<p>Example usage:</p>
+
+<pre>    $table_obj-&gt;search( { name =&gt; 'localhost' } );
+    $table_obj-&gt;search( { name =&gt; [ 'localhost', 'gateway' ] } );
+    $table_obj-&gt;search( [ { name =&gt; 'localhost' }, { name =&gt; 'gateway' } ] );
+
+</pre><p>Returns: $self</p>
+
+<h2 id="hashref_array">hashref_array</h2>
+
+<p><a href="#" onclick="toggleCode('method_hashref_array');return false;">[Source]</a></p>
+                                        <div class="method-source-code" id="method_hashref_array">
+                                        <pre>
+
+sub hashref_array {
+    my $self = shift;
+
+    my @statments = ();
+    if ( scalar @{ $self->_columns } > 0 ){
+        push @statments, sprintf('Columns: %s',join(' ',@{  $self->_columns  }));
+    }
+    push @statments, @{ $self->statments };
+
+    my @data =  $self->_execute( @statments );
+    return wantarray ? @data : \@data;
+}
+</pre></div>
+
+<p>Returns a array or reference to array, depending on the calling context.</p>
+
+<p>Example usage:</p>
+
+<pre>    my $hashref_array = $table_obj-&gt;search( { } )-&gt;hashref_array;
+    print Dumper $hashref_array;
+
+
+
+
+</pre><h2 id="build_table_name">build_table_name</h2>
+
+<p><a href="#" onclick="toggleCode('method_build_table_name');return false;">[Source]</a></p>
+                                        <div class="method-source-code" id="method_build_table_name">
+                                        <pre>
+
+sub build_table_name { die "build_table_name must be implemented in " . ref(shift) };
+
+has '_statments' => (
+    is => 'rw',
+    reader => 'statments',
+    isa => 'ArrayRef',
+    default => sub { return []; }
+);
+
+
+has '_columns' => (
+    is => 'rw',
+    isa => 'ArrayRef',
+    default => sub { return []; }
+);
+
+sub columns {
+    my $self = shift;
+    my @columns = @_ ;
+    $self->_columns( \@columns );
+    return $self;
+}
+</pre></div>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../../../up.gif" /></a></h1>
+
+<p>Robert Bohne, <code>&lt;rbo at cpan.org&gt;</code></p>
+
+<h1 id="COPYRIGHT_amp_LICENSE">COPYRIGHT &amp; LICENSE <a href="#TOP" class="toplink"><img alt="^" src="../../../../up.gif" /></a></h1>
+
+<p>Copyright 2009 Robert Bohne.</p>
+
+<p>This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.</p>
+
+<p>See http://dev.perl.org/licenses/ for more information.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>
