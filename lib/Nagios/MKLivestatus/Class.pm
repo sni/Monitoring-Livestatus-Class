@@ -55,6 +55,16 @@ __END__
 
 Nagios::MKLivestatus::Class - Object-Oriented inteface for Nagios:: MKLivestatus
 
+=head1 DESCRIPTION
+
+This module is a Object-Oriented inteface for Nagios:: MKLivestatus.
+
+B<The module is still in an early stage of development, there can be some change between releases.>
+
+=head1 REPOSITORY
+
+    Git: http://github.com/rbo/Nagios-MKLivestatus-Class
+
 =head1 SYNOPSIS
 
     use Nagios::MKLivestatus::Class;
@@ -87,25 +97,29 @@ Connection point to the status check_mk livestatus Nagios addon. This can be a s
 
 =head2 table_sources
 
-Get a list of all table class names.
-
 Arguments: none
 
 Returns: @list
 
+Get a list of all table class names.
+
 =head2 table
 
-Get table object from ....
-
-Arguments: $scalar
+Arguments: $table_name
 
 Returns: $table_object
 
+Returns a table object based on L<Nagios::MKLivestatus::Class::Base::Table>
+
 =head1 ENVIRONMENT VARIABLES
+
+=head2 NAGIOS_MKLIVESTATUS_CLASS_TRACE
+
+Print tracer output from this object.
 
 =head2 NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER
 
-=head2 NAGIOS_MKLIVESTATUS_CLASS_TRACE
+Set peer for live tests.
 
 =head1 AUTHOR
 
@@ -145,10 +159,6 @@ L<http://cpanratings.perl.org/d/Nagios-MKLivestatus-Class>
 L<http://search.cpan.org/dist/Nagios-MKLivestatus-Class/>
 
 =back
-
-
-=head1 ACKNOWLEDGEMENTS
-
 
 =head1 COPYRIGHT & LICENSE
 
