@@ -19,11 +19,20 @@ has 'backend_obj' => (
     is       => 'ro',
 );
 
+has 'table_sources' => (
+    is      => 'ro',
+    # isa     => 'ArrayRef',
+    builder  => '_build_table_sources',
+);
+
+sub _build_table_sources {
+    my $self = shift;
+    my @found = useall Nagios::MKLivestatus::Class::Table;
+    return \@found;
+}
+
 sub BUILD {
     my $self = shift;
-
-    # Load all Modules 
-    useall Nagios::MKLivestatus::Class::Table;
 
     my $backend = sprintf 'Nagios::MKLivestatus';
     Class::MOP::load_class($backend);
@@ -44,44 +53,45 @@ __END__
 
 =head1 NAME
 
-Nagios::MKLivestatus::Class - The great new Nagios::MKLivestatus::Class!
+Nagios::MKLivestatus::Class - Object-Oriented inteface for Nagios:: MKLivestatus
 
 =head1 SYNOPSIS
 
-
-
-Perhaps a little code snippet.
-
     use Nagios::MKLivestatus::Class;
 
-    my $foo = Nagios::MKLivestatus::Class->new(
-        backend => 'INET',
-        socket => '10.211.55.140:6557',
+    my $class = Nagios::MKLivestatus::Class->new(
+        peer => '/var/lib/nagios3/rw/livestatus.sock'
     );
+
+    my $hosts = $class->table('hosts');
+    my @data = $hosts->columns('display_name')->filter(
+        { display_name => { '-or' => [qw/test_host_47 test_router_3/] } }
+    )->hashref_array();
+    print Dumper \@data;
 
 =head1 ATTRIBUTES
 
-=head2 socket
+=head2 peer
 
-Path to unix socket or host:port
+Connection point to the status check_mk livestatus Nagios addon. This can be a socket or a TCP connection.
 
-=head2 backend
+=head3 Socket
 
-=head3 Values:
+    my $class = Nagios::MKLivestatus::Class->new( peer => '/var/lib/nagios3/rw/livestatus.sock' );
 
-=over 4
+=head3 TCP Connection
 
-=item Socket
-
-=item INET
-
-=back
+    my $class = Nagios::MKLivestatus::Class->new( peer => '192.168.1.1:2134');
 
 =head1 METHODS
 
-=head2 BUILD
+=head2 table_sources
 
-BUILD Method
+Get a list of all table class names.
+
+Arguments: none
+
+Returns: @list
 
 =head2 table
 
