@@ -19,11 +19,20 @@ has 'backend_obj' => (
     is       => 'ro',
 );
 
+has 'table_sources' => (
+    is      => 'ro',
+    # isa     => 'ArrayRef',
+    builder  => '_build_table_sources',
+);
+
+sub _build_table_sources {
+    my $self = shift;
+    my @found = useall Nagios::MKLivestatus::Class::Table;
+    return \@found;
+}
+
 sub BUILD {
     my $self = shift;
-
-    # Load all Modules 
-    useall Nagios::MKLivestatus::Class::Table;
 
     my $backend = sprintf 'Nagios::MKLivestatus';
     Class::MOP::load_class($backend);
@@ -44,58 +53,73 @@ __END__
 
 =head1 NAME
 
-Nagios::MKLivestatus::Class - The great new Nagios::MKLivestatus::Class!
+Nagios::MKLivestatus::Class - Object-Oriented inteface for Nagios:: MKLivestatus
+
+=head1 DESCRIPTION
+
+This module is a Object-Oriented inteface for Nagios:: MKLivestatus.
+
+B<The module is still in an early stage of development, there can be some change between releases.>
+
+=head1 REPOSITORY
+
+    Git: http://github.com/rbo/Nagios-MKLivestatus-Class
 
 =head1 SYNOPSIS
 
-
-
-Perhaps a little code snippet.
-
     use Nagios::MKLivestatus::Class;
 
-    my $foo = Nagios::MKLivestatus::Class->new(
-        backend => 'INET',
-        socket => '10.211.55.140:6557',
+    my $class = Nagios::MKLivestatus::Class->new(
+        peer => '/var/lib/nagios3/rw/livestatus.sock'
     );
+
+    my $hosts = $class->table('hosts');
+    my @data = $hosts->columns('display_name')->filter(
+        { display_name => { '-or' => [qw/test_host_47 test_router_3/] } }
+    )->hashref_array();
+    print Dumper \@data;
 
 =head1 ATTRIBUTES
 
-=head2 socket
+=head2 peer
 
-Path to unix socket or host:port
+Connection point to the status check_mk livestatus Nagios addon. This can be a socket or a TCP connection.
 
-=head2 backend
+=head3 Socket
 
-=head3 Values:
+    my $class = Nagios::MKLivestatus::Class->new( peer => '/var/lib/nagios3/rw/livestatus.sock' );
 
-=over 4
+=head3 TCP Connection
 
-=item Socket
-
-=item INET
-
-=back
+    my $class = Nagios::MKLivestatus::Class->new( peer => '192.168.1.1:2134');
 
 =head1 METHODS
 
-=head2 BUILD
+=head2 table_sources
 
-BUILD Method
+Arguments: none
+
+Returns: @list
+
+Get a list of all table class names.
 
 =head2 table
 
-Get table object from ....
-
-Arguments: $scalar
+Arguments: $table_name
 
 Returns: $table_object
 
+Returns a table object based on L<Nagios::MKLivestatus::Class::Base::Table>
+
 =head1 ENVIRONMENT VARIABLES
+
+=head2 NAGIOS_MKLIVESTATUS_CLASS_TRACE
+
+Print tracer output from this object.
 
 =head2 NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER
 
-=head2 NAGIOS_MKLIVESTATUS_CLASS_TRACE
+Set peer for live tests.
 
 =head1 AUTHOR
 
@@ -135,10 +159,6 @@ L<http://cpanratings.perl.org/d/Nagios-MKLivestatus-Class>
 L<http://search.cpan.org/dist/Nagios-MKLivestatus-Class/>
 
 =back
-
-
-=head1 ACKNOWLEDGEMENTS
-
 
 =head1 COPYRIGHT & LICENSE
 

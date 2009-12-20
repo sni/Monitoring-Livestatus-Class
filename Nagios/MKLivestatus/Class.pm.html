@@ -49,33 +49,34 @@
 <h3 id="TOP">Index</h3>
 <ul>
 	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#REPOSITORY">REPOSITORY</a></li>
 	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
 	<li><a href="#ATTRIBUTES">ATTRIBUTES</a><br />
 <ul>
-	<li><a href="#socket">socket</a></li>
-	<li><a href="#backend">backend</a><br />
+	<li><a href="#peer">peer</a><br />
 <ul>
-	<li><a href="#Values">Values:</a></li>
+	<li><a href="#Socket">Socket</a></li>
+	<li><a href="#TCP_Connection">TCP Connection</a></li>
 </ul>
 </li>
 </ul>
 </li>
 	<li><a href="#METHODS">METHODS</a><br />
 <ul>
-	<li><a href="#BUILD">BUILD</a></li>
+	<li><a href="#table_sources">table_sources</a></li>
 	<li><a href="#table">table</a></li>
 </ul>
 </li>
 	<li><a href="#ENVIRONMENT_VARIABLES">ENVIRONMENT VARIABLES</a><br />
 <ul>
-	<li><a href="#NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER">NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER</a></li>
 	<li><a href="#NAGIOS_MKLIVESTATUS_CLASS_TRACE">NAGIOS_MKLIVESTATUS_CLASS_TRACE</a></li>
+	<li><a href="#NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER">NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER</a></li>
 </ul>
 </li>
 	<li><a href="#AUTHOR">AUTHOR</a></li>
 	<li><a href="#BUGS">BUGS</a></li>
 	<li><a href="#SUPPORT">SUPPORT</a></li>
-	<li><a href="#ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</a></li>
 	<li><a href="#COPYRIGHT_amp_LICENSE">COPYRIGHT &amp; LICENSE</a></li>
 </ul>
 <hr />
@@ -83,60 +84,55 @@
 
 <h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>Nagios::MKLivestatus::Class - The great new Nagios::MKLivestatus::Class!</p>
+<p>Nagios::MKLivestatus::Class - Object-Oriented inteface for Nagios:: MKLivestatus</p>
 
-<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
+<p>This module is a Object-Oriented inteface for Nagios:: MKLivestatus.</p>
 
+<p><strong>The module is still in an early stage of development, there can be some change between releases.</strong></p>
 
+<h1 id="REPOSITORY">REPOSITORY <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
+<pre>    Git: http://github.com/rbo/Nagios-MKLivestatus-Class
 
-
-
-<p>Perhaps a little code snippet.</p>
+</pre><h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
 <pre>    use Nagios::MKLivestatus::Class;
 
-    my $foo = Nagios::MKLivestatus::Class-&gt;new(
-        backend =&gt; 'INET',
-        socket =&gt; '10.211.55.140:6557',
+    my $class = Nagios::MKLivestatus::Class-&gt;new(
+        peer =&gt; '/var/lib/nagios3/rw/livestatus.sock'
     );
+
+    my $hosts = $class-&gt;table('hosts');
+    my @data = $hosts-&gt;columns('display_name')-&gt;filter(
+        { display_name =&gt; { '-or' =&gt; [qw/test_host_47 test_router_3/] } }
+    )-&gt;hashref_array();
+    print Dumper \@data;
 
 </pre><h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<h2 id="socket">socket</h2>
+<h2 id="peer">peer</h2>
 
-<p>Path to unix socket or host:port</p>
+<p>Connection point to the status check_mk livestatus Nagios addon. This can be a socket or a TCP connection.</p>
 
-<h2 id="backend">backend</h2>
+<h3 id="Socket">Socket</h3>
 
-<h3 id="Values">Values:</h3>
+<pre>    my $class = Nagios::MKLivestatus::Class-&gt;new( peer =&gt; '/var/lib/nagios3/rw/livestatus.sock' );
 
-<dl>
-	<dt>Socket</dt>
-	<dt>INET</dt>
-</dl>
-<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+</pre><h3 id="TCP_Connection">TCP Connection</h3>
 
-<h2 id="BUILD">BUILD</h2>
+<pre>    my $class = Nagios::MKLivestatus::Class-&gt;new( peer =&gt; '192.168.1.1:2134');
 
-<p><a href="#" onclick="toggleCode('method_BUILD');return false;">[Source]</a></p>
-                                        <div class="method-source-code" id="method_BUILD">
-                                        <pre>
+</pre><h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-sub BUILD {
-    my $self = shift;
+<h2 id="table_sources">table_sources</h2>
 
-    # Load all Modules 
-    useall Nagios::MKLivestatus::Class::Table;
+<p>Arguments: none</p>
 
-    my $backend = sprintf 'Nagios::MKLivestatus';
-    Class::MOP::load_class($backend);
-    $self->{backend_obj} = $backend->new( peer => $self->{peer} );
-}
-</pre></div>
+<p>Returns: @list</p>
 
-<p>BUILD Method</p>
+<p>Get a list of all table class names.</p>
 
 <h2 id="table">table</h2>
 
@@ -152,17 +148,21 @@ sub table {
 }
 </pre></div>
 
-<p>Get table object from ....</p>
-
-<p>Arguments: $scalar</p>
+<p>Arguments: $table_name</p>
 
 <p>Returns: $table_object</p>
 
+<p>Returns a table object based on <a href="Class/Base/Table.pm.html">Nagios::MKLivestatus::Class::Base::Table</a></p>
+
 <h1 id="ENVIRONMENT_VARIABLES">ENVIRONMENT VARIABLES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<h2 id="NAGIOS_MKLIVESTATUS_CLASS_TRACE">NAGIOS_MKLIVESTATUS_CLASS_TRACE</h2>
+
+<p>Print tracer output from this object.</p>
 
 <h2 id="NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER">NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER</h2>
 
-<h2 id="NAGIOS_MKLIVESTATUS_CLASS_TRACE">NAGIOS_MKLIVESTATUS_CLASS_TRACE</h2>
+<p>Set peer for live tests.</p>
 
 <h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -195,14 +195,6 @@ automatically be notified of progress on your bug as I make changes.</p>
 	<dt>* Search CPAN</dt>
 		<dd><p><a href="http://search.cpan.org/dist/Nagios-MKLivestatus-Class/">http://search.cpan.org/dist/Nagios-MKLivestatus-Class/</a></p></dd>
 </dl>
-
-
-
-<h1 id="ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
-
-
-
-
 <h1 id="COPYRIGHT_amp_LICENSE">COPYRIGHT &amp; LICENSE <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
 <p>Copyright 2009 Robert Bohne.</p>

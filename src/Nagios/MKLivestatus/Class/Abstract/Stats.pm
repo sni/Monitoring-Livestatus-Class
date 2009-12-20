@@ -1,4 +1,5 @@
-package Nagios::MKLivestatus::Class::Abstract::Stats;
+package # Hide from pause
+    Nagios::MKLivestatus::Class::Abstract::Stats;
 
 use Moose;
 use Carp;
