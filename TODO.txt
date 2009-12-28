@@ -1,5 +1,0 @@
-TODO
-====
-
-* Add some POD :-)
-* Add timeout

@@ -129,7 +129,7 @@ Robert Bohne, C<< <rbo at cpan.org> >>
 
 =over 4
 
-=item Update POD
+=item * Bettering the documentation
 
 =back
 
