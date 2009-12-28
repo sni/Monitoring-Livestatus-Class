@@ -125,6 +125,14 @@ Set peer for live tests.
 
 Robert Bohne, C<< <rbo at cpan.org> >>
 
+=head1 TODO:
+
+=over 4
+
+=item Update POD
+
+=back
+
 =head1 BUGS
 
 Please report any bugs or feature requests to C<bug-nagios-mklivestatus-class at rt.cpan.org>, or through

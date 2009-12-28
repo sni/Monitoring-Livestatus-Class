@@ -41,23 +41,21 @@ sub _cond_op_groupby {
     return ( $combining_count, @child_statment );
 }
 
-
-# {
-#     regex   => qr/(groupby)/ix,
-#     handler => '_cond_compining',
-# }
-
 1;
 __END__
 =head1 NAME
 
-Nagios::MKLivestatus::Class::Base::Abstract
+Nagios::MKLivestatus::Class::Abstract::Stats - Class to generate livestatus stats
 
 =head2 SYNOPSIS
 
 =head1 ATTRIBUTES
 
 =head1 METHODS
+
+=head2 apply
+
+please view in L<Nagios::MKLivestatus::Class::Base::Abstract>
 
 =head2 build_mode
 

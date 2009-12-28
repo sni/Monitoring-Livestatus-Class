@@ -1,4 +1,4 @@
-package # hide from pause 
+package # Hide from pause 
     Nagios::MKLivestatus::Class::Base::Abstract;
 
 use Moose;
@@ -292,7 +292,7 @@ sub _METHOD_FOR_refkind {
 __END__
 =head1 NAME
 
-Nagios::MKLivestatus::Class::Base::Abstract
+Nagios::MKLivestatus::Class::Base::Abstract - Base class to generate livestatus statments
 
 =head2 SYNOPSIS
 
@@ -312,19 +312,20 @@ Reference to context object L<Nagios::MKLivestatus::Class>
 
 Example usage:
 
-    $table_obj->search( { name => 'localhost' } );
-    $table_obj->search( { name => [ 'localhost', 'gateway' ] } );
-    $table_obj->search( [ { name => 'localhost' }, { name => 'gateway' } ] );
+    my $filter_obj         = Nagios::MKLivestatus::Class::Abstract::...->new();
+    $filter_obj->apply( { name => 'localhost' } );
+    $filter_obj->apply( { name => [ 'localhost', 'gateway' ] } );
+    $filter_obj->apply( [ { name => 'localhost' }, { name => 'gateway' } ] );
 
 Returns: @statments|\@statments
-
-=head2 build_mode
-
-=head2 build_compining_prefix
 
 =head1 INTERNAL METHODS
 
 =over 4
+
+=item build_mode
+
+=item build_compining_prefix
 
 =item _execute
 
