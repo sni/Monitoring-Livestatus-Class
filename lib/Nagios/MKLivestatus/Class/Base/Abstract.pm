@@ -3,6 +3,7 @@ package # hide from pause
 
 use Moose;
 use Carp;
+use List::Util   qw/first/;
 
 my $TRACE = $Nagios::MKLivestatus::Class::TRACE || 0;
 
@@ -18,6 +19,21 @@ has 'mode' => (
 );
 
 sub build_mode { die "build_mode must be implemented in " . ref(shift) };
+
+has 'operators' => (
+    is      => 'ro',
+    isa     => 'ArrayRef',
+    builder => 'build_operators',
+);
+
+sub build_operators {
+    return [
+        {
+            regexp   => qr/(and|or)/ix,
+            handler => '_cond_compining',
+        }
+    ]
+};
 
 has 'compining_prefix' => (
     is => 'ro',
@@ -91,7 +107,7 @@ sub _cond_HASHREF {
 
         if ( $key =~ /^-/ ){
             # Child key for combining filters ( -and / -or )
-            ( $child_combining_count, @child_statment ) = $self->_cond_compining($key, $value, $combining_count);
+            ( $child_combining_count, @child_statment ) = $self->_cond_op_in_hash($key, $value, $combining_count);
             $combining_count = $child_combining_count;
         } else{
             $method = $self->_METHOD_FOR_refkind("_cond_hashpair",$value);
@@ -153,7 +169,7 @@ sub _cond_hashpair_HASHREF {
         if ( $child_key =~ /^-/ ){
             # Child key for combining filters ( -and / -or )
             my ( $child_combining_count, @child_statment ) = $self->_dispatch_refkind($child_value, {
-                ARRAYREF  => sub { $self->_cond_compining($child_key, { $key => $child_value } , 0) },
+                ARRAYREF  => sub { $self->_cond_op_in_hash($child_key, { $key => $child_value } , 0) },
                 UNDEF     => sub { croak "not supported : UNDEF in arrayref" },
             });
             $combining_count += $child_combining_count;
@@ -183,6 +199,31 @@ sub _cond_hashpair_HASHREF {
     return ( $combining_count, @statment );
 }
 
+sub _cond_op_in_hash {
+    my $self    = shift;
+    my $operator     = shift;
+    my $value   = shift;
+    my $combining_count = shift;
+    print STDERR "#IN  _cond_op_in_hash $operator $value $combining_count\n" if $TRACE > 9;
+
+    if ( defined $operator and $operator =~ /^-/ ){
+        $operator =~ s/^-//; # remove -
+        $operator =~ s/^\s+|\s+$//g; # remove leading/trailing space
+        $operator = ucfirst( $operator );
+        $operator = 'GroupBy' if ( $operator eq 'Groupby' );
+    }
+
+    my $operator_config = first { $operator =~ $_->{regexp} } @{ $self->operators };
+    my $operator_handler = $operator_config->{handler};
+    if ( not ref $operator_handler ){
+        return $self->$operator_handler($operator,$value,$combining_count);
+    }elsif ( ref $operator_handler eq 'CODE' ) {
+        return $operator_handler->($self,$operator,$value,$combining_count);
+    }
+
+    print STDERR "#OUT _cond_op_in_hash $operator $value $combining_count\n" if $TRACE > 9;
+    return ( 0, () );
+}
 sub _cond_compining {
     my $self = shift;
     my $combining = shift;
