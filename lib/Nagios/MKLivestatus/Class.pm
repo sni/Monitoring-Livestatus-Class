@@ -5,9 +5,7 @@ use Module::Find;
 
 our $VERSION = '0.01';
 
-
 our $TRACE = $ENV{'NAGIOS_MKLIVESTATUS_CLASS_TRACE'} || 0;
-
 
 has 'peer' => (
     is       => 'rw',
