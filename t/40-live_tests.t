@@ -22,7 +22,7 @@ is_deeply( $got_statment, $expected_statment, "Simple filter live test" );
 my $services = $class->table('services');
 
 $got_statment = $services->stats( { state => [qw/0 1 2 3/] } )->hashref_array();
-my $expected_statment = [
+$expected_statment = [
     {
         'state = 3' => '29',
         'state = 0' => '392',
