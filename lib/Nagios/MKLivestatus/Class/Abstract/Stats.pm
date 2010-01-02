@@ -57,9 +57,17 @@ Nagios::MKLivestatus::Class::Abstract::Stats - Class to generate livestatus stat
 
 please view in L<Nagios::MKLivestatus::Class::Base::Abstract>
 
-=head2 build_mode
+=head1 INTERNAL METHODS
 
-=head2 build_compining_prefix
+=over 4
+
+=item build_mode
+
+=item build_compining_prefix
+
+=item build_operators
+
+=back
 
 =head1 AUTHOR
 

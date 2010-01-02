@@ -327,6 +327,8 @@ Returns: @statments|\@statments
 
 =item build_compining_prefix
 
+=item build_operators
+
 =item _execute
 
 =item _recurse_cond
