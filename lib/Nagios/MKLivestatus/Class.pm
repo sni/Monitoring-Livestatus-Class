@@ -109,6 +109,16 @@ Returns: $table_object
 
 Returns a table object based on L<Nagios::MKLivestatus::Class::Base::Table>
 
+=head1 INTERNAL METHODS
+
+=over 4
+
+=item BUILD
+
+Initialises the internal L<Nagios::MKLivestatus> object.
+
+=back
+
 =head1 ENVIRONMENT VARIABLES
 
 =head2 NAGIOS_MKLIVESTATUS_CLASS_TRACE

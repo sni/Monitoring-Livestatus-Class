@@ -24,7 +24,13 @@ Nagios::MKLivestatus::Class::Abstract::Filter - Class to generate livestatus fil
 
 please view in L<Nagios::MKLivestatus::Class::Base::Abstract>
 
-=head2 build_mode
+=head1 INTERNAL METHODS
+
+=over 4
+
+=item build_mode
+
+=back
 
 =head1 AUTHOR
 
