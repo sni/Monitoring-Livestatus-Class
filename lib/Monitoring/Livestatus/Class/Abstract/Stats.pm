@@ -1,11 +1,11 @@
 package # Hide from pause 
-    Nagios::MKLivestatus::Class::Abstract::Stats;
+    Monitoring::Livestatus::Class::Abstract::Stats;
 
 use Moose;
 use Carp;
-extends 'Nagios::MKLivestatus::Class::Base::Abstract';
+extends 'Monitoring::Livestatus::Class::Base::Abstract';
 
-my $TRACE = $Nagios::MKLivestatus::Class::TRACE || 0;
+my $TRACE = $Monitoring::Livestatus::Class::TRACE || 0;
 
 sub build_mode { return 'Stats'; };
 
@@ -45,7 +45,7 @@ sub _cond_op_groupby {
 __END__
 =head1 NAME
 
-Nagios::MKLivestatus::Class::Abstract::Stats - Class to generate livestatus stats
+Monitoring::Livestatus::Class::Abstract::Stats - Class to generate livestatus stats
 
 =head2 SYNOPSIS
 
@@ -55,7 +55,7 @@ Nagios::MKLivestatus::Class::Abstract::Stats - Class to generate livestatus stat
 
 =head2 apply
 
-please view in L<Nagios::MKLivestatus::Class::Base::Abstract>
+please view in L<Monitoring::Livestatus::Class::Base::Abstract>
 
 =head1 INTERNAL METHODS
 

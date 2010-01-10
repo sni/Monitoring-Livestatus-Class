@@ -1,11 +1,11 @@
-package Nagios::MKLivestatus::Class;
+package Monitoring::Livestatus::Class;
 
 use Moose;
 use Module::Find;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
-our $TRACE = $ENV{'NAGIOS_MKLIVESTATUS_CLASS_TRACE'} || 0;
+our $TRACE = $ENV{'MONITORING_LIVESTATUS_CLASS_TRACE'} || 0;
 
 has 'peer' => (
     is       => 'rw',
@@ -25,14 +25,14 @@ has 'table_sources' => (
 
 sub _build_table_sources {
     my $self = shift;
-    my @found = useall Nagios::MKLivestatus::Class::Table;
+    my @found = useall Monitoring::Livestatus::Class::Table;
     return \@found;
 }
 
 sub BUILD {
     my $self = shift;
 
-    my $backend = sprintf 'Nagios::MKLivestatus';
+    my $backend = sprintf 'Monitoring::Livestatus';
     Class::MOP::load_class($backend);
     $self->{backend_obj} = $backend->new( peer => $self->{peer} );
 }
@@ -42,7 +42,7 @@ sub BUILD {
 sub table {
     my $self = shift;
     my $table = ucfirst(lc(shift));
-    my $class = sprintf("Nagios::MKLivestatus::Class::Table::%s",$table);
+    my $class = sprintf("Monitoring::Livestatus::Class::Table::%s",$table);
     return $class->new( ctx => $self );
 }
 
@@ -51,23 +51,23 @@ __END__
 
 =head1 NAME
 
-Nagios::MKLivestatus::Class - Object-Oriented inteface for Nagios:: MKLivestatus
+Monitoring::Livestatus::Class - Object-Oriented inteface for Monitoring::Livestatus
 
 =head1 DESCRIPTION
 
-This module is a Object-Oriented inteface for Nagios:: MKLivestatus.
+This module is a Object-Oriented inteface for Monitoring::Livestatus
 
 B<The module is still in an early stage of development, there can be some change between releases.>
 
 =head1 REPOSITORY
 
-    Git: http://github.com/rbo/Nagios-MKLivestatus-Class
+    Git: http://github.com/rbo/Monitoring-Livestatus-Class
 
 =head1 SYNOPSIS
 
-    use Nagios::MKLivestatus::Class;
+    use Monitoring::Livestatus::Class;
 
-    my $class = Nagios::MKLivestatus::Class->new(
+    my $class = Monitoring::Livestatus::Class->new(
         peer => '/var/lib/nagios3/rw/livestatus.sock'
     );
 
@@ -81,15 +81,15 @@ B<The module is still in an early stage of development, there can be some change
 
 =head2 peer
 
-Connection point to the status check_mk livestatus Nagios addon. This can be a socket or a TCP connection.
+Connection point to the status check_mk livestatus addon. This can be a socket or a TCP connection.
 
 =head3 Socket
 
-    my $class = Nagios::MKLivestatus::Class->new( peer => '/var/lib/nagios3/rw/livestatus.sock' );
+    my $class = Monitoring::Livestatus::Class->new( peer => '/var/lib/nagios3/rw/livestatus.sock' );
 
 =head3 TCP Connection
 
-    my $class = Nagios::MKLivestatus::Class->new( peer => '192.168.1.1:2134');
+    my $class = Monitoring::Livestatus::Class->new( peer => '192.168.1.1:2134');
 
 =head1 METHODS
 
@@ -107,7 +107,7 @@ Arguments: $table_name
 
 Returns: $table_object
 
-Returns a table object based on L<Nagios::MKLivestatus::Class::Base::Table>
+Returns a table object based on L<Monitoring::Livestatus::Class::Base::Table>
 
 =head1 INTERNAL METHODS
 
@@ -115,17 +115,17 @@ Returns a table object based on L<Nagios::MKLivestatus::Class::Base::Table>
 
 =item BUILD
 
-Initialises the internal L<Nagios::MKLivestatus> object.
+Initialises the internal L<Monitoring::Livestatus> object.
 
 =back
 
 =head1 ENVIRONMENT VARIABLES
 
-=head2 NAGIOS_MKLIVESTATUS_CLASS_TRACE
+=head2 MONITORING_LIVESTATUS_CLASS_TRACE
 
 Print tracer output from this object.
 
-=head2 NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER
+=head2 MONITORING_LIVESTATUS_CLASS_TEST_PEER
 
 Set peer for live tests.
 
@@ -143,15 +143,15 @@ Robert Bohne, C<< <rbo at cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-nagios-mklivestatus-class at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Nagios-MKLivestatus-Class>.  I will be notified, and then you'll
+Please report any bugs or feature requests to C<bug-Monitoring-Livestatus-Class at rt.cpan.org>, or through
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Monitoring-Livestatus-Class>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Nagios::MKLivestatus::Class
+    perldoc Monitoring::Livestatus::Class
 
 
 You can also look for information at:
@@ -160,19 +160,19 @@ You can also look for information at:
 
 =item * RT: CPAN's request tracker
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Nagios-MKLivestatus-Class>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Monitoring-Livestatus-Class>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/Nagios-MKLivestatus-Class>
+L<http://annocpan.org/dist/Monitoring-Livestatus-Class>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/Nagios-MKLivestatus-Class>
+L<http://cpanratings.perl.org/d/Monitoring-Livestatus-Class>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/Nagios-MKLivestatus-Class/>
+L<http://search.cpan.org/dist/Monitoring-Livestatus-Class/>
 
 =back
 

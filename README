@@ -1,4 +1,4 @@
-Nagios-MKLivestatus-Class
+Monitoring-Livestatus-Class
 
 The README is used to introduce the module and provide instructions on
 how to install the module, any machine dependencies it may have (for
@@ -26,21 +26,21 @@ SUPPORT AND DOCUMENTATION
 After installing, you can find documentation for this module with the
 perldoc command.
 
-    perldoc Nagios::MKLivestatus::Class
+    perldoc Monitoring::Livestatus::Class
 
 You can also look for information at:
 
     RT, CPAN's request tracker
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Nagios-MKLivestatus-Class
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Monitoring-Livestatus-Class
 
     AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Nagios-MKLivestatus-Class
+        http://annocpan.org/dist/Monitoring-Livestatus-Class
 
     CPAN Ratings
-        http://cpanratings.perl.org/d/Nagios-MKLivestatus-Class
+        http://cpanratings.perl.org/d/Monitoring-Livestatus-Class
 
     Search CPAN
-        http://search.cpan.org/dist/Nagios-MKLivestatus-Class/
+        http://search.cpan.org/dist/Monitoring-Livestatus-Class/
 
 
 COPYRIGHT AND LICENCE

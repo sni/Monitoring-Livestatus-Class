@@ -3,7 +3,7 @@
 use Test::More tests => 1;
 
 BEGIN {
-    use_ok( 'Nagios::MKLivestatus::Class' );
+    use_ok( 'Monitoring::Livestatus::Class' );
 }
 
-diag( "Testing Nagios::MKLivestatus::Class $Nagios::MKLivestatus::Class::VERSION, Perl $], $^X" );
+diag( "Testing Monitoring::Livestatus::Class $Monitoring::Livestatus::Class::VERSION, Perl $], $^X" );

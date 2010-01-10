@@ -1,4 +1,7 @@
-Revision history for Nagios-MKLivestatus-Class
+Revision history for Monitoring-Livestatus-Class
+
+0.02	xxxx
+		Rename module from Nagios::MKLivestatus::Class into Monitoring::Livestatus::Class
 
 0.01    2010-01-02 18:41
         First version

@@ -1,14 +1,14 @@
 use inc::Module::Install;
 
-name     'Nagios-MKLivestatus-Class';
-all_from 'lib/Nagios/MKLivestatus/Class.pm';
+name     'Monitoring-Livestatus-Class';
+all_from 'lib/Monitoring/Livestatus/Class.pm';
 author   q{Robert Bohne <rbo@cpan.org>};
 license  'perl';
-repository 'http://github.com/rbo/Nagios-MKLivestatus-Class';
+repository 'http://github.com/rbo/Monitoring-Livestatus-Class';
 
 requires 'Moose';
 requires 'Module::Find';
-requires 'Nagios::MKLivestatus' => '0.28';
+requires 'Monitoring::Livestatus' => '0.32';
 
 build_requires 'Test::More';
 

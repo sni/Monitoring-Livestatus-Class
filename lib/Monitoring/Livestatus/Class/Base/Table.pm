@@ -1,15 +1,15 @@
 package # hide from pause 
-    Nagios::MKLivestatus::Class::Base::Table;
+    Monitoring::Livestatus::Class::Base::Table;
 
 use Moose;
 use Carp;
 
-use Nagios::MKLivestatus::Class::Abstract::Filter;
-use Nagios::MKLivestatus::Class::Abstract::Stats;
+use Monitoring::Livestatus::Class::Abstract::Filter;
+use Monitoring::Livestatus::Class::Abstract::Stats;
 
 has 'ctx' => (
     is => 'rw',
-    isa => 'Nagios::MKLivestatus::Class',
+    isa => 'Monitoring::Livestatus::Class',
     handles => [qw/backend_obj/],
 );
 
@@ -18,12 +18,12 @@ has 'ctx' => (
 #  
 has 'filter_obj' => (
     is => 'ro',
-    isa => 'Nagios::MKLivestatus::Class::Abstract::Filter',
+    isa => 'Monitoring::Livestatus::Class::Abstract::Filter',
     builder => '_build_filter',
     handles => { apply_filer => 'apply' },
 );
 
-sub _build_filter { return Nagios::MKLivestatus::Class::Abstract::Filter->new( ctx => shift ); };
+sub _build_filter { return Monitoring::Livestatus::Class::Abstract::Filter->new( ctx => shift ); };
 
 sub filter {
     my $self = shift;
@@ -41,12 +41,12 @@ sub filter {
 # 
 has 'stats_obj' => (
     is => 'ro',
-    isa => 'Nagios::MKLivestatus::Class::Abstract::Stats',
+    isa => 'Monitoring::Livestatus::Class::Abstract::Stats',
     builder => '_build_stats',
     handles => { apply_stats => 'apply' },
 );
 
-sub _build_stats { return Nagios::MKLivestatus::Class::Abstract::Stats->new( ctx => shift ); };
+sub _build_stats { return Monitoring::Livestatus::Class::Abstract::Stats->new( ctx => shift ); };
 
 sub stats {
     my $self = shift;
@@ -122,7 +122,7 @@ sub _execute {
     push @statments, @data;
 
     printf STDERR "EXECUTE: %s\n", join("\nEXECUTE: ",@statments)
-        if $Nagios::MKLivestatus::Class::TRACE >= 1;
+        if $Monitoring::Livestatus::Class::TRACE >= 1;
 
     my $statment = join("\n",@statments);
 
@@ -135,11 +135,11 @@ sub _execute {
 __END__
 =head1 NAME
 
-Nagios::MKLivestatus::Class::Base::Table - Base class for all table objects.
+Monitoring::Livestatus::Class::Base::Table - Base class for all table objects.
 
 =head2 SYNOPSIS
 
-    my $class = Nagios::MKLivestatus::Class->new(
+    my $class = Monitoring::Livestatus::Class->new(
         backend => 'INET',
         socket => '10.211.55.140:6557',
     );
@@ -152,15 +152,15 @@ Nagios::MKLivestatus::Class::Base::Table - Base class for all table objects.
 
 =head2 ctx
 
-Reference to context object L<Nagios::MKLivestatus::Class>
+Reference to context object L<Monitoring::Livestatus::Class>
 
 =head2 filter
 
-Reference to filter object L<Nagios::MKLivestatus::Class>
+Reference to filter object L<Monitoring::Livestatus::Class>
 
 =head2 stats
 
-Reference to filter object L<Nagios::MKLivestatus::Class>
+Reference to filter object L<Monitoring::Livestatus::Class>
 
 =head2 table_name
 

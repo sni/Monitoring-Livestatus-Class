@@ -2,7 +2,7 @@
 
 use Test::More;
 
-use_ok('Nagios::MKLivestatus::Class::Abstract::Filter');
+use_ok('Monitoring::Livestatus::Class::Abstract::Filter');
 
 my @testings = (
     { name => 'localhost' }, ["Filter: name = localhost"],
@@ -111,7 +111,7 @@ my @testings = (
 for ( my $i = 0 ; $i < scalar @testings ; $i++ ) {
     my $search            = $testings[$i];
     my $expected_statment = $testings[ ++$i ];
-    my $filter_obj         = Nagios::MKLivestatus::Class::Abstract::Filter->new();
+    my $filter_obj         = Monitoring::Livestatus::Class::Abstract::Filter->new();
     my $got_statment;
     eval {
         $got_statment = $filter_obj->apply($search);

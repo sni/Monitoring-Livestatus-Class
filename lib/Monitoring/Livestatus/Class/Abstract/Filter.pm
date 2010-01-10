@@ -1,9 +1,9 @@
 package # Hide from pause 
-    Nagios::MKLivestatus::Class::Abstract::Filter;
+    Monitoring::Livestatus::Class::Abstract::Filter;
 
 use Moose;
 use Carp;
-extends 'Nagios::MKLivestatus::Class::Base::Abstract';
+extends 'Monitoring::Livestatus::Class::Base::Abstract';
 
 sub build_mode { return 'Filter'; };
 
@@ -12,7 +12,7 @@ sub build_mode { return 'Filter'; };
 __END__
 =head1 NAME
 
-Nagios::MKLivestatus::Class::Abstract::Filter - Class to generate livestatus filters
+Monitoring::Livestatus::Class::Abstract::Filter - Class to generate livestatus filters
 
 =head2 SYNOPSIS
 
@@ -22,7 +22,7 @@ Nagios::MKLivestatus::Class::Abstract::Filter - Class to generate livestatus fil
 
 =head2 apply
 
-please view in L<Nagios::MKLivestatus::Class::Base::Abstract>
+please view in L<Monitoring::Livestatus::Class::Base::Abstract>
 
 =head1 INTERNAL METHODS
 

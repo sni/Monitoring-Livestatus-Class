@@ -2,13 +2,13 @@ use strict;
 use warnings;
 use Test::More;
 use Data::Dumper;
-unless ( $ENV{NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER} ) {
-    plan skip_all => 'no NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER configured';
+unless ( $ENV{MONITORING_LIVESTATUS_CLASS_TEST_PEER} ) {
+    plan skip_all => 'no MONITORING_LIVESTATUS_CLASS_TEST_PEER configured';
 }
 
-use_ok('Nagios::MKLivestatus::Class');
-use Nagios::MKLivestatus::Class;
-my $class = Nagios::MKLivestatus::Class->new( peer => $ENV{NAGIOS_MKLIVESTATUS_CLASS_TEST_PEER}, );
+use_ok('Monitoring::Livestatus::Class');
+
+my $class = Monitoring::Livestatus::Class->new( peer => $ENV{MONITORING_LIVESTATUS_CLASS_TEST_PEER}, );
 my $hosts = $class->table('hosts');
 
 my $got_statment =

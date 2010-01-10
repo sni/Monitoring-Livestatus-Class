@@ -1,11 +1,11 @@
 package # hide from pause 
-    Nagios::MKLivestatus::Class::Table::Hostgroups;
+    Monitoring::Livestatus::Class::Table::Downtimes;
 
 use Moose;
-extends 'Nagios::MKLivestatus::Class::Base::Table';
+extends 'Monitoring::Livestatus::Class::Base::Table';
 =head1 NAME
 
-Nagios::MKLivestatus::Class::Table::Columns - Class for hostgroups table
+Monitoring::Livestatus::Class::Table::Columns - Class for downtimes table
 
 =head1 METHODS
 
@@ -15,7 +15,7 @@ Returns the table name from these class.
 
 =cut
 
-sub build_table_name { return 'hostgroups' };
+sub build_table_name { return 'downtimes' };
 
 =head1 AUTHOR
 
@@ -32,5 +32,4 @@ by the Free Software Foundation; or the Artistic License.
 See http://dev.perl.org/licenses/ for more information.
 
 =cut
-
 1;

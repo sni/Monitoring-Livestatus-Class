@@ -1,11 +1,11 @@
 package # Hide from pause 
-    Nagios::MKLivestatus::Class::Base::Abstract;
+    Monitoring::Livestatus::Class::Base::Abstract;
 
 use Moose;
 use Carp;
 use List::Util   qw/first/;
 
-my $TRACE = $Nagios::MKLivestatus::Class::TRACE || 0;
+my $TRACE = $Monitoring::Livestatus::Class::TRACE || 0;
 
 has 'ctx' => (
     is => 'rw',
@@ -292,7 +292,7 @@ sub _METHOD_FOR_refkind {
 __END__
 =head1 NAME
 
-Nagios::MKLivestatus::Class::Base::Abstract - Base class to generate livestatus statments
+Monitoring::Livestatus::Class::Base::Abstract - Base class to generate livestatus statments
 
 =head2 SYNOPSIS
 
@@ -300,7 +300,7 @@ Nagios::MKLivestatus::Class::Base::Abstract - Base class to generate livestatus 
 
 =head2 ctx
 
-Reference to context object L<Nagios::MKLivestatus::Class>
+Reference to context object L<Monitoring::Livestatus::Class>
 
 =head2 mode
 
@@ -312,7 +312,7 @@ Reference to context object L<Nagios::MKLivestatus::Class>
 
 Example usage:
 
-    my $filter_obj         = Nagios::MKLivestatus::Class::Abstract::...->new();
+    my $filter_obj         = Monitoring::Livestatus::Class::Abstract::...->new();
     $filter_obj->apply( { name => 'localhost' } );
     $filter_obj->apply( { name => [ 'localhost', 'gateway' ] } );
     $filter_obj->apply( [ { name => 'localhost' }, { name => 'gateway' } ] );

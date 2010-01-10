@@ -1,11 +1,11 @@
 package # hide from pause 
-    Nagios::MKLivestatus::Class::Table::Services;
+    Monitoring::Livestatus::Class::Table::Hosts;
 
 use Moose;
-extends 'Nagios::MKLivestatus::Class::Base::Table';
+extends 'Monitoring::Livestatus::Class::Base::Table';
 =head1 NAME
 
-Nagios::MKLivestatus::Class::Table::Columns - Class for services table
+Monitoring::Livestatus::Class::Table::Columns - Class for hosts table
 
 =head1 METHODS
 
@@ -15,7 +15,7 @@ Returns the table name from these class.
 
 =cut
 
-sub build_table_name { return 'services' };
+sub build_table_name { return 'hosts' };
 
 =head1 AUTHOR
 
