@@ -51,13 +51,15 @@ __END__
 
 =head1 NAME
 
-Monitoring::Livestatus::Class - Object-Oriented inteface for Monitoring::Livestatus
+Monitoring::Livestatus::Class - Object-Oriented interface for
+Monitoring::Livestatus
 
 =head1 DESCRIPTION
 
-This module is a Object-Oriented inteface for Monitoring::Livestatus
+This module is an object-oriented interface for Monitoring::Livestatus
 
-B<The module is still in an early stage of development, there can be some change between releases.>
+B<The module is still in an early stage of development, there can be some
+api changes between releases.>
 
 =head1 REPOSITORY
 
@@ -81,15 +83,20 @@ B<The module is still in an early stage of development, there can be some change
 
 =head2 peer
 
-Connection point to the status check_mk livestatus addon. This can be a socket or a TCP connection.
+Connection point to the status check_mk livestatus addon. This can be a unix
+domain or tcp socket.
 
 =head3 Socket
 
-    my $class = Monitoring::Livestatus::Class->new( peer => '/var/lib/nagios3/rw/livestatus.sock' );
+    my $class = Monitoring::Livestatus::Class->new(
+	peer => '/var/lib/nagios3/rw/livestatus.sock'
+    );
 
 =head3 TCP Connection
 
-    my $class = Monitoring::Livestatus::Class->new( peer => '192.168.1.1:2134');
+    my $class = Monitoring::Livestatus::Class->new(
+	peer => '192.168.1.1:2134'
+    );
 
 =head1 METHODS
 
@@ -115,7 +122,7 @@ Returns a table object based on L<Monitoring::Livestatus::Class::Base::Table>
 
 =item BUILD
 
-Initialises the internal L<Monitoring::Livestatus> object.
+Initializes the internal L<Monitoring::Livestatus> object.
 
 =back
 
@@ -143,9 +150,10 @@ Robert Bohne, C<< <rbo at cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-Monitoring-Livestatus-Class at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Monitoring-Livestatus-Class>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+Please report any bugs or feature requests to
+C<bug-Monitoring-Livestatus-Class at rt.cpan.org>,
+or through the web interface at
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Monitoring-Livestatus-Class>.
 
 =head1 SUPPORT
 

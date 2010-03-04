@@ -182,7 +182,8 @@ Set columns...
 
 =head2 headers
 
-Returns a array or reference to array, depending on the calling context, of all header columns.
+Returns a array or reference to array, depending on the calling context, of all
+header columns.
 
 =head2 filter
 

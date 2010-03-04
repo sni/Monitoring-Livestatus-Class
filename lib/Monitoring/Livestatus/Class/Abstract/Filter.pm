@@ -12,7 +12,8 @@ sub build_mode { return 'Filter'; };
 __END__
 =head1 NAME
 
-Monitoring::Livestatus::Class::Abstract::Filter - Class to generate livestatus filters
+Monitoring::Livestatus::Class::Abstract::Filter - Class to generate livestatus
+filters
 
 =head2 SYNOPSIS
 

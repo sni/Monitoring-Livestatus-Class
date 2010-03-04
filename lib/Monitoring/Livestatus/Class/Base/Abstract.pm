@@ -292,7 +292,8 @@ sub _METHOD_FOR_refkind {
 __END__
 =head1 NAME
 
-Monitoring::Livestatus::Class::Base::Abstract - Base class to generate livestatus statments
+Monitoring::Livestatus::Class::Base::Abstract - Base class to generate
+livestatus statments
 
 =head2 SYNOPSIS
 

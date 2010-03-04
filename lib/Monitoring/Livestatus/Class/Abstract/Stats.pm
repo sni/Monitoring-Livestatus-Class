@@ -45,7 +45,8 @@ sub _cond_op_groupby {
 __END__
 =head1 NAME
 
-Monitoring::Livestatus::Class::Abstract::Stats - Class to generate livestatus stats
+Monitoring::Livestatus::Class::Abstract::Stats - Class to generate livestatus
+stats
 
 =head2 SYNOPSIS
 
