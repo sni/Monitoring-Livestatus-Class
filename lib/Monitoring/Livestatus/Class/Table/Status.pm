@@ -1,11 +1,11 @@
-package # hide from pause 
+package # hide from pause
     Monitoring::Livestatus::Class::Table::Status;
 
 use Moose;
 extends 'Monitoring::Livestatus::Class::Base::Table';
 =head1 NAME
 
-Monitoring::Livestatus::Class::Table::Columns - Class for status table
+Monitoring::Livestatus::Class::Table::Status - Class for status table
 
 =head1 METHODS
 

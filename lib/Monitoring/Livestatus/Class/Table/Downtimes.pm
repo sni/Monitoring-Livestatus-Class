@@ -1,11 +1,11 @@
-package # hide from pause 
+package # hide from pause
     Monitoring::Livestatus::Class::Table::Downtimes;
 
 use Moose;
 extends 'Monitoring::Livestatus::Class::Base::Table';
 =head1 NAME
 
-Monitoring::Livestatus::Class::Table::Columns - Class for downtimes table
+Monitoring::Livestatus::Class::Table::Downtimes - Class for downtimes table
 
 =head1 METHODS
 

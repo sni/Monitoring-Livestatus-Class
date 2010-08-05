@@ -8,11 +8,10 @@ repository 'http://github.com/rbo/Monitoring-Livestatus-Class';
 
 requires 'Moose';
 requires 'Module::Find';
-requires 'Monitoring::Livestatus' => '0.32';
+requires 'Monitoring::Livestatus' => '0.54';
 
 build_requires 'Test::More';
 
 auto_install;
 
 WriteAll;
-

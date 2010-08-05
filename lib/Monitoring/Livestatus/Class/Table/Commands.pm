@@ -1,12 +1,12 @@
 package # hide from pause
-    Monitoring::Livestatus::Class::Table::Contacts;
+    Monitoring::Livestatus::Class::Table::Commands;
 
 use Moose;
 extends 'Monitoring::Livestatus::Class::Base::Table';
 
 =head1 NAME
 
-Monitoring::Livestatus::Class::Table::Contacts - Class for contacts table
+Monitoring::Livestatus::Class::Table::Commands - Class for commands table
 
 =head1 METHODS
 
@@ -16,7 +16,7 @@ Returns the table name from these class.
 
 =cut
 
-sub build_table_name { return 'contacts' };
+sub build_table_name { return 'commands' };
 
 =head1 AUTHOR
 

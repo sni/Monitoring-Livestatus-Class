@@ -1,11 +1,11 @@
-package # hide from pause 
+package # hide from pause
     Monitoring::Livestatus::Class::Table::Hostgroups;
 
 use Moose;
 extends 'Monitoring::Livestatus::Class::Base::Table';
 =head1 NAME
 
-Monitoring::Livestatus::Class::Table::Columns - Class for hostgroups table
+Monitoring::Livestatus::Class::Table::Hostgroups - Class for hostgroups table
 
 =head1 METHODS
 
