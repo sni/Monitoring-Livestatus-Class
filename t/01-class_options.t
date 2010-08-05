@@ -36,5 +36,5 @@ $class = Monitoring::Livestatus::Class->new( peer => 'localhost:1234', keepalive
 isa_ok($class, "Monitoring::Livestatus::Class", 'keepalive option');
 
 # verbose
-$class = Monitoring::Livestatus::Class->new( peer => 'localhost:1234', verbose => 1 );
+$class = Monitoring::Livestatus::Class->new( peer => 'localhost:1234', verbose => 0 );
 isa_ok($class, "Monitoring::Livestatus::Class", 'verbose option');
