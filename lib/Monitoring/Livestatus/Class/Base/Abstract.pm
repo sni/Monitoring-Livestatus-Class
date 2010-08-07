@@ -1,4 +1,4 @@
-package # Hide from pause 
+package # Hide from pause
     Monitoring::Livestatus::Class::Base::Abstract;
 
 use Moose;
@@ -120,6 +120,21 @@ sub _cond_HASHREF {
     print STDERR "#OUT _cond_HASHREF $cond $combining_count\n" if $TRACE > 9;
     return ( $combining_count, @all_statment );
 }
+
+sub _cond_hashpair_UNDEF {
+    my $self = shift;
+    my $key = shift || '';
+    my $value = shift;
+    my $operator = shift || '=';
+    print STDERR "# _cond_hashpair_SCALAR\n" if $TRACE > 9 ;
+
+    my $combining_count = shift || 0;
+    my @statment = (
+        sprintf("%s: %s %s",$self->mode,$key,$operator)
+    );
+    $combining_count++;
+    return ( $combining_count, @statment );
+};
 
 sub _cond_hashpair_SCALAR {
     my $self = shift;
