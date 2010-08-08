@@ -36,6 +36,12 @@ sub filter {
     return $self;
 }
 
+sub options {
+    my($self, $options) = @_;
+    $self->{'_options'} = $options;
+    return $self;
+}
+
 #
 #  Stats Stuff
 #
@@ -77,6 +83,11 @@ has '_statments' => (
     default => sub { return []; }
 );
 
+has '_options' => (
+    is => 'rw',
+    isa => 'HashRef',
+    default => sub { return {}; }
+);
 
 has '_columns' => (
     is => 'rw',
@@ -143,7 +154,10 @@ sub _execute {
 
     my $statment = join("\n",@statments);
 
-    my $return = $self->backend_obj->selectall_arrayref($statment, { slice => {}, AddPeer => 1 });
+    my $options = $self->{'_options'};
+    $options->{'slice'} = {};
+
+    my $return = $self->backend_obj->selectall_arrayref($statment, $options);
 
     return wantarray ? @{ $return }  : $return;
 }
@@ -185,7 +199,11 @@ Containts the table name.
 
 =head2 statments
 
-Containts the all statments.
+Containts all the statments.
+
+=head2 options
+
+Containts all the options.
 
 =head1 METHODS
 
