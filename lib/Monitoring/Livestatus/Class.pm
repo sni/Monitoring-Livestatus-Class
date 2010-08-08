@@ -9,8 +9,19 @@ our $TRACE = $ENV{'MONITORING_LIVESTATUS_CLASS_TRACE'} || 0;
 
 has 'peer' => (
     is       => 'rw',
-    isa      => 'Str',
     required => 1,
+);
+
+has 'verbose' => (
+    is       => 'rw',
+    isa      => 'Bool',
+    required => 0,
+);
+
+has 'keepalive' => (
+    is       => 'rw',
+    isa      => 'Bool',
+    required => 0,
 );
 
 has 'backend_obj' => (
@@ -34,7 +45,11 @@ sub BUILD {
 
     my $backend = sprintf 'Monitoring::Livestatus';
     Class::MOP::load_class($backend);
-    $self->{backend_obj} = $backend->new( peer => $self->{peer} );
+    $self->{backend_obj} = $backend->new(
+        peer      => $self->{peer},
+        keepalive => $self->{keepalive},
+        verbose   => $self->{verbose},
+    );
 }
 
 

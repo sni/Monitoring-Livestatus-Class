@@ -1,4 +1,4 @@
-package # Hide from pause 
+package # Hide from pause
     Monitoring::Livestatus::Class::Abstract::Filter;
 
 use Moose;
@@ -25,7 +25,7 @@ filters
 
 please view in L<Monitoring::Livestatus::Class::Base::Abstract>
 
-=head1 INTERNAL METHODS
+=head1 INTERNAL METHODS
 
 =over 4
 
