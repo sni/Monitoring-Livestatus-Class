@@ -14,13 +14,13 @@ has 'peer' => (
 
 has 'verbose' => (
     is       => 'rw',
-    isa      => 'Int',
+    isa      => 'Bool',
     required => 0,
 );
 
 has 'keepalive' => (
     is       => 'rw',
-    isa      => 'Int',
+    isa      => 'Bool',
     required => 0,
 );
 
@@ -46,10 +46,10 @@ sub BUILD {
     my $backend = sprintf 'Monitoring::Livestatus';
     Class::MOP::load_class($backend);
     $self->{backend_obj} = $backend->new(
-                                         peer       => $self->{peer},
-                                         keepalive  => $self->{keepalive},
-                                         verbose    => $self->{verbose},
-                                        );
+        peer      => $self->{peer},
+        keepalive => $self->{keepalive},
+        verbose   => $self->{verbose},
+    );
 }
 
 
