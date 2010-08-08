@@ -1,4 +1,4 @@
-package # hide from pause 
+package # hide from pause
     Monitoring::Livestatus::Class::Base::Table;
 
 use Moose;
@@ -13,9 +13,9 @@ has 'ctx' => (
     handles => [qw/backend_obj/],
 );
 
-# 
+#
 #  Filter Stuff
-#  
+#
 has 'filter_obj' => (
     is => 'ro',
     isa => 'Monitoring::Livestatus::Class::Abstract::Filter',
@@ -36,9 +36,9 @@ sub filter {
     return $self;
 }
 
-# 
+#
 #  Stats Stuff
-# 
+#
 has 'stats_obj' => (
     is => 'ro',
     isa => 'Monitoring::Livestatus::Class::Abstract::Stats',
@@ -113,6 +113,23 @@ sub hashref_array {
     return wantarray ? @data : \@data;
 }
 
+sub hashref_pk {
+    my $self = shift;
+    my $key  = shift;
+
+    my %indexed;
+    my @data = $self->hashref_array();
+    for my $row (@data) {
+        if(!defined $row->{$key}) {
+            my %possible_keys = keys %{$row};
+            croak("key $key not found in result set, possible keys are: ".join(', ', sort keys %possible_keys));
+        } else {
+            $indexed{$row->{$key}} = $row;
+        }
+    }
+    return \%indexed;
+}
+
 sub _execute {
     my $self = shift;
     my @data = @_;
@@ -126,7 +143,7 @@ sub _execute {
 
     my $statment = join("\n",@statments);
 
-    my $return = $self->backend_obj->selectall_arrayref($statment, { slice => {} });
+    my $return = $self->backend_obj->selectall_arrayref($statment, { slice => {}, AddPeer => 1 });
 
     return wantarray ? @{ $return }  : $return;
 }
@@ -203,6 +220,16 @@ Example usage:
 
     my $hashref_array = $table_obj->search( { } )->hashref_array;
     print Dumper $hashref_array;
+
+
+=head2 hashref_pk
+
+Returns a hash of hash references.
+
+Example usage:
+
+    my $hashref_pk = $table_obj->search( { } )->hashref_pk($key);
+    print Dumper $hashref_pk;
 
 
 =head2 build_table_name
