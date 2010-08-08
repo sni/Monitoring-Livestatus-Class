@@ -1,7 +1,12 @@
-Revision history for Monitoring-Livestatus-Class
+# Revision history for Monitoring-Livestatus-Class
+# Date format: %Y-%m-%d %H:%M:%S or %F %T  
 
-0.02	xxxx
-		Rename module from Nagios::MKLivestatus::Class into Monitoring::Livestatus::Class
+0.03    
+        added ability to define multiple peers (Sven Nierlein)
+        added new class tables and fixed names of current ones (Sven Nierlein)
+
+0.02    2010-01-10 
+        Rename module from Nagios::MKLivestatus::Class into Monitoring::Livestatus::Class
 
 0.01    2010-01-02 18:41
         First version

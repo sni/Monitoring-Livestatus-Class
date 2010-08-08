@@ -155,6 +155,10 @@ Set peer for live tests.
 
 Robert Bohne, C<< <rbo at cpan.org> >>
 
+=head1 CONTRIBUTORS
+
+nierlein: Sven Nierlein <nierlein@cpan.org>
+
 =head1 TODO:
 
 =over 4
