@@ -4,6 +4,7 @@
 0.03    
         added ability to define multiple peers (Sven Nierlein)
         added new class tables and fixed names of current ones (Sven Nierlein)
+        added hashref_pk (Sven Nierlein)
 
 0.02    2010-01-10 
         Rename module from Nagios::MKLivestatus::Class into Monitoring::Livestatus::Class
