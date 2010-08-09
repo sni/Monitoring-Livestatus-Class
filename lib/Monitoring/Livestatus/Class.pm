@@ -24,6 +24,13 @@ has 'keepalive' => (
     required => 0,
 );
 
+has 'name' => (
+    is       => 'rw',
+    isa      => 'Str',
+    required => 0,
+);
+
+
 has 'backend_obj' => (
     is       => 'ro',
 );
@@ -46,6 +53,7 @@ sub BUILD {
     my $backend = sprintf 'Monitoring::Livestatus';
     Class::MOP::load_class($backend);
     $self->{backend_obj} = $backend->new(
+        name      => $self->{name},
         peer      => $self->{peer},
         keepalive => $self->{keepalive},
         verbose   => $self->{verbose},
