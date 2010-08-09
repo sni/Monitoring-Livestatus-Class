@@ -152,7 +152,7 @@ sub hashref_pk {
     my $self = shift;
     my $key  = $self->single_primary_key || shift;
     unless ( $key ) {
-        croak("There was no single primary key to be found, possible keys are: ".join(', ', sort keys %possible_keys));
+        croak("There was no single primary key to be found.");
     };
     my %indexed;
     my @data = $self->hashref_array();
