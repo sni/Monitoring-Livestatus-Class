@@ -19,6 +19,8 @@ Monitoring::Livestatus::Class::Table::Timeperiods - Class for timeperiods table
 
 =head2 build_table_name
 
+=head2 build_primary_keys
+
 Returns the table name from these class.
 
 =head1 AUTHOR
