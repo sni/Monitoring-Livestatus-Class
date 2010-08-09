@@ -6,6 +6,8 @@ extends 'Monitoring::Livestatus::Class::Base::Table';
 
 sub build_table_name { return 'timeperiods' };
 
+sub build_primary_keys { return [qw/name/] };
+
 1;
 __END__
 

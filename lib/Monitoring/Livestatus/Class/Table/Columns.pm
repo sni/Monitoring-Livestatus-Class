@@ -6,6 +6,8 @@ extends 'Monitoring::Livestatus::Class::Base::Table';
 
 sub build_table_name { return 'columns' };
 
+sub build_primary_keys { return [qw/name table/] };
+
 1;
 __END__
 =head1 NAME

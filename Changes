@@ -7,6 +7,7 @@
         added hashref_pk (Sven Nierlein)
         added name option (Sven Nierlein)
         added options method (Sven Nierlein)
+        added primary key stuff
 
 0.02    2010-01-10 
         Rename module from Nagios::MKLivestatus::Class into Monitoring::Livestatus::Class

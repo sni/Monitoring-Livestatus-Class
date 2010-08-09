@@ -65,9 +65,6 @@ sub stats {
     return $self;
 }
 
-
-
-
 has 'table_name' => (
     is => 'ro',
     isa => 'Str',
@@ -75,6 +72,33 @@ has 'table_name' => (
 );
 
 sub build_table_name { die "build_table_name must be implemented in " . ref(shift) };
+
+# 
+# Primary key stuff
+# 
+has 'primary_keys' => (
+    is => 'ro',
+    isa => 'ArrayRef[Str]',
+    builder  => 'build_primary_keys',
+);
+
+sub build_primary_keys { die "build_primary_keys must be implemented in " . ref(shift) };
+
+sub has_single_primary_key {
+    my $self = shift;
+    if ( scalar @{ $self->primary_keys } == 1 ){
+        return 1
+    }
+    return;
+}
+
+sub single_primary_key {
+    my $self = shift;
+    if ( $self->has_single_primary_key ){
+        return $self->primary_keys->[0];
+    }
+    return;
+}
 
 has '_statments' => (
     is => 'rw',
@@ -126,8 +150,10 @@ sub hashref_array {
 
 sub hashref_pk {
     my $self = shift;
-    my $key  = shift;
-
+    my $key  = $self->single_primary_key || shift;
+    unless ( $key ) {
+        croak("There was no single primary key to be found, possible keys are: ".join(', ', sort keys %possible_keys));
+    };
     my %indexed;
     my @data = $self->hashref_array();
     for my $row (@data) {
@@ -138,7 +164,7 @@ sub hashref_pk {
             $indexed{$row->{$key}} = $row;
         }
     }
-    return \%indexed;
+    return wantarray ? %indexed : \%indexed;
 }
 
 sub _execute {
@@ -246,11 +272,13 @@ Returns a hash of hash references.
 
 Example usage:
 
-    my $hashref_pk = $table_obj->search( { } )->hashref_pk($key);
+    my $hashref_pk = $table_obj->search( { } )->hashref_pk();
     print Dumper $hashref_pk;
 
 
 =head2 build_table_name
+
+=head2 build_primary_keys
 
 =head1 AUTHOR
 

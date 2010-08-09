@@ -6,6 +6,8 @@ extends 'Monitoring::Livestatus::Class::Base::Table';
 
 sub build_table_name { return 'hostgroups' };
 
+sub build_primary_keys { return [qw/name/] };
+
 __END__
 1;
 =head1 NAME

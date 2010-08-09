@@ -6,6 +6,8 @@ extends 'Monitoring::Livestatus::Class::Base::Table';
 
 sub build_table_name { return 'comments' };
 
+sub build_primary_keys { return [qw/host_name service_description/] };
+
 1;
 __END__
 =head1 NAME

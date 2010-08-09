@@ -6,6 +6,8 @@ extends 'Monitoring::Livestatus::Class::Base::Table';
 
 sub build_table_name { return 'servicesbygroup' };
 
+sub build_primary_keys { return [] };
+
 1;
 __END__
 
