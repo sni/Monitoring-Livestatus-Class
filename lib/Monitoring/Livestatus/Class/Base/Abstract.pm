@@ -371,7 +371,7 @@ Returns: @statments|\@statments
 
 =head1 AUTHOR
 
-Robert Bohne, C<< <rbo at cpan.org> >>
+See L<Monitoring::Livestatus::Class/AUTHOR> and L<Monitoring::Livestatus::Class/CONTRIBUTORS>.
 
 =head1 COPYRIGHT & LICENSE
 
