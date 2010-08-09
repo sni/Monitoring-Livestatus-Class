@@ -275,6 +275,9 @@ Example usage:
     my $hashref_pk = $table_obj->search( { } )->hashref_pk();
     print Dumper $hashref_pk;
 
+=head2 has_single_primary_key
+
+=head2 single_primary_key
 
 =head2 build_table_name
 
