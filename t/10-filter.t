@@ -5,6 +5,8 @@ use Test::More;
 use_ok('Monitoring::Livestatus::Class::Abstract::Filter');
 
 my @testings = (
+    [[]], [],
+    [[{ name => undef }], { name => 'localhost' }, []], ["Filter: name =", "Filter: name = localhost"],
     { name => undef }, ["Filter: name ="],
     { name => 'localhost' }, ["Filter: name = localhost"],
     { name => 'localhost', service => 'ping' }, [ "Filter: name = localhost", "Filter: service = ping" ],

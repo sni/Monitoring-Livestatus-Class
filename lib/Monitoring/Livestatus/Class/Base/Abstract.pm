@@ -80,6 +80,7 @@ sub _cond_ARRAYREF {
     my @cp_conds = @{ $conds }; # work with a copy
     while ( my $cond = shift @cp_conds ){
         my ( $child_combining_count, @child_statment ) = $self->_dispatch_refkind($cond, {
+            ARRAYREF  => sub { $self->_recurse_cond($cond, $combining_count) },
             HASHREF   => sub { $self->_recurse_cond($cond, $combining_count) },
             UNDEF     => sub { croak "not supported : UNDEF in arrayref" },
             SCALAR    => sub { $self->_recurse_cond( { $cond => shift(@cp_conds) } , $combining_count ) },
