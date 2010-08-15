@@ -7,6 +7,9 @@ use Carp;
 use Monitoring::Livestatus::Class::Abstract::Filter;
 use Monitoring::Livestatus::Class::Abstract::Stats;
 
+use Monitoring::Livestatus::Class;
+my $TRACE = Monitoring::Livestatus::Class->TRACE() || 0;
+
 has 'ctx' => (
     is => 'rw',
     isa => 'Monitoring::Livestatus::Class',
@@ -176,7 +179,7 @@ sub _execute {
     push @statments, @data;
 
     printf STDERR "EXECUTE: %s\n", join("\nEXECUTE: ",@statments)
-        if $Monitoring::Livestatus::Class::TRACE >= 1;
+        if $TRACE >= 1;
 
     my $statment = join("\n",@statments);
 

@@ -5,7 +5,8 @@ use Moose;
 use Carp;
 extends 'Monitoring::Livestatus::Class::Base::Abstract';
 
-my $TRACE = $Monitoring::Livestatus::Class::TRACE || 0;
+use Monitoring::Livestatus::Class;
+my $TRACE = Monitoring::Livestatus::Class->TRACE() || 0;
 
 sub build_mode { return 'Stats'; };
 
