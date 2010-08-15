@@ -170,7 +170,7 @@ sub _cond_hashpair_ARRAYREF {
                 return;
             },
             HASHREF => sub {
-                @statment[-1] .= $self->_cond_attribute_HASHREF($value);
+                $statment[-1] .= $self->_cond_attribute_HASHREF($value);
                 return;
             }
         });
