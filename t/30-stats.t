@@ -20,65 +20,55 @@ my @testings = (
         "StatsGroupBy: host_name",
     ],
     [
-        [ 'check_type' => 0, -as => 'active_sum' ],
+        [ 'check_type' => [ 0, { -as => 'active_sum' } ] ],
         {
             -and => [
                 'check_type'       => 0,
                 'has_been_checked' => 1,
-                'last_check'       => { '>=' => $min1 },
-                # -as                => 'active_1_min_sum',
+                'last_check'       => { '>=' => [ $min1, { -as => 'active_1_min_sum', } ] },
             ]
         },
         {
             -and => [
                 'check_type'       => 0,
                 'has_been_checked' => 1,
-                'last_check'       => { '>=' => $min5 },
-                # -as                => 'active_5_min_sum',
+                'last_check'       => { '>=' => [ $min5, { -as => 'active_5_min_sum', } ] },
             ]
         },
         {
             -and => [
                 'check_type'       => 0,
                 'has_been_checked' => 1,
-                'last_check'       => { '>=' => $min15 },
-                # -as => 'active_15_min_sum',
+                'last_check'       => { '>=' => [ $min15, { -as => 'active_15_min_sum' } ] },
             ]
         },
         {
             -and => [
                 'check_type'       => 0,
                 'has_been_checked' => 1,
-                -avg               => 'latency',
-                # -as                => 'latency_avg',
+                -avg               => [ 'latency', { -as => 'latency_avg' } ],
             ]
         }
     ],
-      [
-        # "Stats: check_type = 0 as active_sum",
-        "Stats: check_type = 0",
+    [
+        "Stats: check_type = 0 as active_sum",
         "Stats: check_type = 0",
         "Stats: has_been_checked = 1",
-        # "Stats: last_check >= $min1 as active_1_min_sum",
-        "Stats: last_check >= $min1",
+        "Stats: last_check >= $min1 as active_1_min_sum",
         "StatsAnd: 3",
         "Stats: check_type = 0",
         "Stats: has_been_checked = 1",
-        # "Stats: last_check >= $min5 as active_5_min_sum",
-        "Stats: last_check >= $min5",
+        "Stats: last_check >= $min5 as active_5_min_sum",
         "StatsAnd: 3",
         "Stats: check_type = 0",
         "Stats: has_been_checked = 1",
-        # "Stats: last_check >= $min15 as active_15_min_sum",
-        "Stats: last_check >= $min15",
+        "Stats: last_check >= $min15 as active_15_min_sum",
         "StatsAnd: 3",
         "Stats: check_type = 0",
         "Stats: has_been_checked = 1",
-        # "Stats: avg latency as latency_avg",
-        "Stats: avg latency",
+        "Stats: avg latency as latency_avg",
         "StatsAnd: 3",
-      ]
-
+    ]
 );
 
 for ( my $i = 0 ; $i < scalar @testings ; $i++ ) {

@@ -163,9 +163,20 @@ sub _cond_hashpair_ARRAYREF {
 
     my @statment = ();
     foreach my $value ( @{ $values }){
-        push @statment, sprintf("%s: %s %s %s",$self->mode,$key,$operator,$value);
-        $combining_count++;
+        $self->_dispatch_refkind($value, {
+            SCALAR  => sub {
+                push @statment, sprintf("%s: %s %s %s",$self->mode,$key,$operator,$value);
+                $combining_count++;
+                return;
+            },
+            HASHREF => sub {
+                @statment[-1] .= $self->_cond_attribute_HASHREF($value);
+                return;
+            }
+        });
+
     }
+
     print STDERR "#OUT _cond_hashpair_ARRAYREF $combining_count\n" if $TRACE > 9;
     return ( $combining_count, @statment );
 }
@@ -265,6 +276,19 @@ sub _cond_compining {
     }
     print STDERR "#OUT _cond_compining $combining $combining_count \n" if $TRACE > 9;
     return ( $combining_count, @statment );
+}
+
+sub _cond_attribute_HASHREF {
+    my $self    = shift;
+    my $value   = shift;
+    my @attributes = ();
+    foreach my $key ( keys %$value ) {
+        my $op = $key;
+        $op =~ s/^-//; # remove -
+        $op =~ s/^\s+|\s+$//g; # remove leading/trailing space
+        push @attributes, $op,$value->{$key};
+    }
+    return ' ' . join(' ',@attributes);
 }
 
 sub _refkind {

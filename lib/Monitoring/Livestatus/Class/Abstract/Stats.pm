@@ -54,10 +54,32 @@ sub _cond_op_simple {
 
     print STDERR "#IN  _cond_op_simple $operator $value $combining_count\n" if $TRACE > 9;
 
-    my ( $combining_count,@child_statment ) = $self->_dispatch_refkind($value, {
+    #handline from:  -avg               => [ 'latency', { -as => 'latency_avg' } ],
+    my ( @child_statment ) = $self->_dispatch_refkind($value, {
         SCALAR  => sub {
-            return (++$combining_count, sprintf("%s: %s %s",$self->compining_prefix,$operator,$value) );
+            $combining_count++;
+            return ( sprintf("%s: %s %s",$self->compining_prefix,$operator,$value) );
         },
+        ARRAYREF => sub {
+            $combining_count++;
+            if ( scalar @$value > 2 ){
+                die "More then 2 elements not supported.";
+            }
+            my $first_value = shift @$value;
+            my $second_value = shift @$value;
+
+            # First
+            my $statment = $self->_dispatch_refkind($first_value, {
+                SCALAR  => sub {
+                    return sprintf("%s: %s %s",$self->compining_prefix,$operator,$first_value);
+                },
+            });
+
+            # Second
+            my $method = $self->_METHOD_FOR_refkind("_cond_attribute",$second_value);
+            $statment .= $self->$method($second_value);
+            return ( $statment );
+        }
     });
 
     print STDERR "#OUT _cond_op_simple $operator $value $combining_count\n" if $TRACE > 9;
