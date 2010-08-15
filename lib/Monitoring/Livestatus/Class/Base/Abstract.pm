@@ -30,7 +30,7 @@ has 'operators' => (
 sub build_operators {
     return [
         {
-            regexp   => qr/(and|or)/ix,
+            regexp  => qr/(and|or)/ix,
             handler => '_cond_compining',
         }
     ]
@@ -226,7 +226,6 @@ sub _cond_op_in_hash {
     if ( defined $operator and $operator =~ /^-/ ){
         $operator =~ s/^-//; # remove -
         $operator =~ s/^\s+|\s+$//g; # remove leading/trailing space
-        $operator = 'GroupBy' if ( $operator eq 'Groupby' );
     }
 
     my $operator_config = first { $operator =~ $_->{regexp} } @{ $self->operators };
@@ -240,6 +239,7 @@ sub _cond_op_in_hash {
     print STDERR "#OUT _cond_op_in_hash $operator $value $combining_count\n" if $TRACE > 9;
     return ( 0, () );
 }
+
 sub _cond_compining {
     my $self = shift;
     my $combining = shift;
