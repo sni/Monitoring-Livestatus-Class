@@ -16,8 +16,13 @@ sub build_operators {
     my $operators = $self->SUPER::build_operators();
 
     push @{ $operators }, {
-        regexp   => qr/(groupby)/ix,
+        regexp  => qr/(groupby)/ix,
         handler => '_cond_op_groupby',
+    };
+
+    push @{ $operators }, {
+        regexp  => qr/(sum|min|max|avg|std)/ix,
+        handler => '_cond_op_simple'
     };
 
     return $operators;
@@ -33,11 +38,28 @@ sub _cond_op_groupby {
 
     my ( @child_statment ) = $self->_dispatch_refkind($value, {
         SCALAR  => sub {
-            return ( sprintf("%s%s: %s",$self->compining_prefix,$operator,$value) );
+            return ( sprintf("%s%s: %s",$self->compining_prefix, 'GroupBy', $value) );
+        },
+    });
+    print STDERR "#OUT _cond_op_groupby $operator $value $combining_count\n" if $TRACE > 9;
+    return ( $combining_count, @child_statment );
+}
+
+sub _cond_op_simple {
+    my $self    = shift;
+    my $operator = shift;
+    my $value = shift;
+    my $combining_count = shift || 0;
+
+    print STDERR "#IN  _cond_op_simple $operator $value $combining_count\n" if $TRACE > 9;
+
+    my ( $combining_count,@child_statment ) = $self->_dispatch_refkind($value, {
+        SCALAR  => sub {
+            return (++$combining_count, sprintf("%s: %s %s",$self->compining_prefix,$operator,$value) );
         },
     });
 
-    print STDERR "#OUT _cond_op_groupby $operator $value $combining_count\n" if $TRACE > 9;
+    print STDERR "#OUT _cond_op_simple $operator $value $combining_count\n" if $TRACE > 9;
     return ( $combining_count, @child_statment );
 }
 

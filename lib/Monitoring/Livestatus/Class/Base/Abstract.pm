@@ -5,7 +5,8 @@ use Moose;
 use Carp;
 use List::Util   qw/first/;
 
-my $TRACE = $Monitoring::Livestatus::Class::TRACE || 0;
+use Monitoring::Livestatus::Class;
+my $TRACE = Monitoring::Livestatus::Class->TRACE() || 0;
 
 has 'ctx' => (
     is => 'rw',
@@ -225,7 +226,6 @@ sub _cond_op_in_hash {
     if ( defined $operator and $operator =~ /^-/ ){
         $operator =~ s/^-//; # remove -
         $operator =~ s/^\s+|\s+$//g; # remove leading/trailing space
-        $operator = ucfirst( $operator );
         $operator = 'GroupBy' if ( $operator eq 'Groupby' );
     }
 
@@ -256,7 +256,13 @@ sub _cond_compining {
     }
     my ( $child_combining_count, @child_statment )= $self->_recurse_cond($value, 0 );
     push @statment, @child_statment;
-    push @statment, sprintf("%s: %d",$combining,$child_combining_count) if ( defined $combining );
+    if ( defined $combining ) {
+        push @statment, sprintf("%s%s: %d",
+            $self->compining_prefix,
+            ucfirst( $combining ),
+            $child_combining_count,
+        );
+    }
     print STDERR "#OUT _cond_compining $combining $combining_count \n" if $TRACE > 9;
     return ( $combining_count, @statment );
 }
