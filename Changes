@@ -2,6 +2,7 @@
 # Date format: %Y-%m-%d %H:%M:%S or %F %T  
 
 0.03    
+        Added -isa operator ( inspired by Sven Nierlein )
         Added ability to define multiple peers (Sven Nierlein)
         Added new class tables and fixed names of current ones (Sven Nierlein)
         Added hashref_pk (Sven Nierlein)
