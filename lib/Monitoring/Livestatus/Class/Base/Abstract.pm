@@ -98,7 +98,6 @@ sub _cond_HASHREF {
     my $cond = shift;
     my $combining_count = shift || 0;
     print STDERR "#IN _cond_HASHREF $cond $combining_count\n" if $TRACE > 9 ;
-
     my @all_statment = ();
     my $child_combining_count = 0;
     my @child_statment = ();
@@ -171,24 +170,20 @@ sub _cond_hashpair_ARRAYREF {
 }
 
 sub _cond_hashpair_HASHREF {
-    my $self = shift;
-    my $key = shift || '';
-    my $values = shift || {};
-    my $combining = shift || undef;
+    my $self            = shift;
+    my $key             = shift || '';
+    my $values          = shift || {};
+    my $combining       = shift || undef;
     my $combining_count = shift || 0;
-    print STDERR "# _cond_hashpair_HASHREF $combining_count\n" if $TRACE > 9;
 
+    print STDERR "#IN Abstract::_cond_hashpair_HASHREF $combining_count\n" if $TRACE > 9;
     my @statment = ();
 
     foreach my $child_key ( keys %{ $values } ){
         my $child_value = $values->{ $child_key };
 
         if ( $child_key =~ /^-/ ){
-            # Child key for combining filters ( -and / -or )
-            my ( $child_combining_count, @child_statment ) = $self->_dispatch_refkind($child_value, {
-                ARRAYREF  => sub { $self->_cond_op_in_hash($child_key, { $key => $child_value } , 0) },
-                UNDEF     => sub { croak "not supported : UNDEF in arrayref" },
-            });
+            my ( $child_combining_count, @child_statment ) = $self->_cond_op_in_hash($child_key, { $key => $child_value } , 0);
             $combining_count += $child_combining_count;
             push @statment, @child_statment;
         } elsif ( $child_key =~ /^[!<>=~]/ ){
@@ -212,14 +207,14 @@ sub _cond_hashpair_HASHREF {
             push @statment, @child_statment;
         }
     }
-
+    print STDERR "#OUT Abstract::_cond_hashpair_HASHREF $combining_count\n" if $TRACE > 9;
     return ( $combining_count, @statment );
 }
 
 sub _cond_op_in_hash {
-    my $self    = shift;
-    my $operator     = shift;
-    my $value   = shift;
+    my $self            = shift;
+    my $operator        = shift;
+    my $value           = shift;
     my $combining_count = shift;
     print STDERR "#IN  _cond_op_in_hash $operator $value $combining_count\n" if $TRACE > 9;
 
@@ -294,8 +289,10 @@ sub _dispatch_refkind {
 
     my $type = $self->_refkind($value);
     my $coderef = $dispatch_table->{$type};
+
     die sprintf("No coderef for %s ( %s ) found!",$value, $type)
         unless ( ref $coderef eq 'CODE' );
+
     return $coderef->();
 }
 
