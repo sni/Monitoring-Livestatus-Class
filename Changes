@@ -1,7 +1,7 @@
 # Revision history for Monitoring-Livestatus-Class
-# Date format: %Y-%m-%d %H:%M:%S or %F %T  
+# Date format: %Y-%m-%d %H:%M:%S %z or %F %T %z
 
-0.03    
+0.03    2010-09-19 11:39:19 +0200
         Added -isa operator ( inspired by Sven Nierlein )
         Added ability to define multiple peers (Sven Nierlein)
         Added new class tables and fixed names of current ones (Sven Nierlein)
@@ -16,6 +16,6 @@
 0.02    2010-01-10 
         Rename module from Nagios::MKLivestatus::Class into Monitoring::Livestatus::Class
 
-0.01    2010-01-02 18:41
+0.01    2010-01-02 18:41 +0200
         First version
 
