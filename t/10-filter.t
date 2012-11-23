@@ -9,7 +9,7 @@ my @testings = (
     [[{ name => undef }], { name => 'localhost' }, []], ["Filter: name =", "Filter: name = localhost"],
     { name => undef }, ["Filter: name ="],
     { name => 'localhost' }, ["Filter: name = localhost"],
-    { name => 'localhost', service => 'ping' }, [ "Filter: name = localhost", "Filter: service = ping" ],
+    [ name => 'localhost', service => 'ping' ], [ "Filter: name = localhost", "Filter: service = ping" ],
     { name => [qw/localhost router/] }, [ "Filter: name = localhost", "Filter: name = router" ],
     [
         { name => 'localhost' },
@@ -23,42 +23,44 @@ my @testings = (
         ]
     },['Filter: scheduled_downtime_depth > 0','Filter: host_scheduled_downtime_depth > 0','Or: 2'],
     {
-        '-or' => {
-            '-and' => { state => '2', acknowledged => '1', },
+        '-or' => [
+            '-and' => [ acknowledged => '1', state => '2'],
             state => '0',
-        }
-    },['Filter: acknowledged = 1', 'Filter: state = 2', 'And: 2', 'Filter: state = 0', 'Or: 2'],
+        ]
+    }
+    ,['Filter: acknowledged = 1', 'Filter: state = 2', 'And: 2', 'Filter: state = 0', 'Or: 2'],
     {
         '-or' => [
             { host_has_been_checked => 0, },
             {
-                '-and' => {
+                '-and' => [
                     host_state            => 1,
                     host_has_been_checked => 1,
-                }
+                ]
             },
             {
-                '-and' => {
+                '-and' => [
                     host_state            => 2,
                     host_has_been_checked => 1,
-                }
+                ]
             },
         ]
-    },['Filter: host_has_been_checked = 0','Filter: host_state = 1','Filter: host_has_been_checked = 1','And: 2','Filter: host_state = 2','Filter: host_has_been_checked = 1','And: 2','Or: 3',],
-    {
+    }
+    ,['Filter: host_has_been_checked = 0','Filter: host_state = 1','Filter: host_has_been_checked = 1','And: 2','Filter: host_state = 2','Filter: host_has_been_checked = 1','And: 2','Or: 3',],
+    [
         '-or' => [
             { host_has_been_checked => 0, },
             {
-                '-and' => {
+                '-and' => [
                     host_state            => 1,
                     host_has_been_checked => 1,
-                }
+                ]
             },
             {
-                '-and' => {
+                '-and' => [
                     host_state            => 3,
                     host_has_been_checked => 1,
-                }
+                ]
             },
         ],
         '-and' => [
@@ -72,7 +74,7 @@ my @testings = (
             notifications_enabled => [qw/0 1/],
             accept_passive_checks => [qw/0 1/],
         ]
-    },[
+    ],[
         'Filter: host_has_been_checked = 0',
         'Filter: host_state = 1',
         'Filter: host_has_been_checked = 1',
