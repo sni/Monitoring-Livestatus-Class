@@ -127,7 +127,7 @@ sub _cond_hashpair_UNDEF {
     my $key = shift || '';
     my $value = shift;
     my $operator = shift || '=';
-    print STDERR "# _cond_hashpair_SCALAR\n" if $TRACE > 9 ;
+    print STDERR "# _cond_hashpair_UNDEF\n" if $TRACE > 9 ;
 
     my $combining_count = shift || 0;
     my @statment = (
