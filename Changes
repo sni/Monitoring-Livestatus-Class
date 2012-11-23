@@ -1,6 +1,10 @@
 # Revision history for Monitoring-Livestatus-Class
 # Date format: %Y-%m-%d %H:%M:%S %z or %F %T %z
 
+0.04    2012-11-23 21:36:39 +0100
+        Fixed test:t/10-filter.t - stupid 'sort' problem with hash keys.
+        Fixed debug output
+
 0.03    2010-09-19 11:39:19 +0200
         Added -isa operator ( inspired by Sven Nierlein )
         Added ability to define multiple peers (Sven Nierlein)

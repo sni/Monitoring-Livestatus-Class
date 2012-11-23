@@ -3,7 +3,7 @@ package Monitoring::Livestatus::Class;
 use Moose;
 use Module::Find;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 sub TRACE { return $ENV{'MONITORING_LIVESTATUS_CLASS_TRACE'} || 0 };
 our $TRACE = TRACE();
