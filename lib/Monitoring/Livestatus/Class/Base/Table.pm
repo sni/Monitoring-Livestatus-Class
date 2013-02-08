@@ -26,7 +26,7 @@ has 'filter_obj' => (
     handles => { apply_filer => 'apply' },
 );
 
-sub _build_filter { return Monitoring::Livestatus::Class::Abstract::Filter->new( ctx => shift ); };
+sub _build_filter { return Monitoring::Livestatus::Class::Abstract::Filter->new(); };
 
 sub filter {
     my $self = shift;
@@ -55,7 +55,7 @@ has 'stats_obj' => (
     handles => { apply_stats => 'apply' },
 );
 
-sub _build_stats { return Monitoring::Livestatus::Class::Abstract::Stats->new( ctx => shift ); };
+sub _build_stats { return Monitoring::Livestatus::Class::Abstract::Stats->new(); };
 
 sub stats {
     my $self = shift;
@@ -76,9 +76,9 @@ has 'table_name' => (
 
 sub build_table_name { die "build_table_name must be implemented in " . ref(shift) };
 
-# 
+#
 # Primary key stuff
-# 
+#
 has 'primary_keys' => (
     is => 'ro',
     isa => 'ArrayRef[Str]',
