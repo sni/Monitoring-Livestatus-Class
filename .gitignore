@@ -11,3 +11,6 @@ cover_db
 local-lib
 META.yml
 inc/
+MANIFEST
+MYMETA.json
+MYMETA.yml
