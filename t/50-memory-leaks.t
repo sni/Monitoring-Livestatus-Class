@@ -17,7 +17,7 @@ plan tests => 5;
 
 use_ok('Monitoring::Livestatus::Class');
 
-use Devel::LeakGuard::Object qw( leakguard );
+Devel::LeakGuard::Object->import(qw(leakguard));
 
 my $class = Monitoring::Livestatus::Class->new(peer => $ENV{'MONITORING_LIVESTATUS_CLASS_TEST_PEER'});
 
