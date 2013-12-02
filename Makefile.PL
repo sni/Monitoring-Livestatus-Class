@@ -8,6 +8,7 @@ repository 'http://github.com/rbo/Monitoring-Livestatus-Class';
 
 requires 'Moose';
 requires 'Module::Find';
+requires 'Class::Load';
 requires 'Monitoring::Livestatus' => '0.54';
 
 build_requires 'Test::More';

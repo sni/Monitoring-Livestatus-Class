@@ -2,8 +2,9 @@ package Monitoring::Livestatus::Class;
 
 use Moose;
 use Module::Find;
+use Class::Load;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 sub TRACE { return $ENV{'MONITORING_LIVESTATUS_CLASS_TRACE'} || 0 };
 our $TRACE = TRACE();
@@ -52,7 +53,7 @@ sub BUILD {
     my $self = shift;
 
     my $backend = sprintf 'Monitoring::Livestatus';
-    Class::MOP::load_class($backend);
+    Class::Load::load_class($backend);
     $self->{backend_obj} = $backend->new(
         name      => $self->{name},
         peer      => $self->{peer},
