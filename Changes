@@ -1,6 +1,10 @@
 # Revision history for Monitoring-Livestatus-Class
 # Date format: %Y-%m-%d %H:%M:%S %z or %F %T %z
 
+0.05    2013-12-02 12:12:53 +0100
+        replaced deprecated Class::MOP::load_class with Class::Load
+        fixed memory leak due to circular dependency
+
 0.04    2012-11-23 21:36:39 +0100
         Fixed test:t/10-filter.t - stupid 'sort' problem with hash keys.
         Fixed debug output
