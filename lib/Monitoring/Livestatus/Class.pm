@@ -4,7 +4,7 @@ use Moose;
 use Module::Find;
 use Class::Load;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 sub TRACE { return $ENV{'MONITORING_LIVESTATUS_CLASS_TRACE'} || 0 };
 our $TRACE = TRACE();

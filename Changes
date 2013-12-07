@@ -1,6 +1,9 @@
 # Revision history for Monitoring-Livestatus-Class
 # Date format: %Y-%m-%d %H:%M:%S %z or %F %T %z
 
+0.06    2013-12-07 11:21:13 +0100
+        fixed leak test case
+
 0.05    2013-12-02 12:12:53 +0100
         replaced deprecated Class::MOP::load_class with Class::Load
         fixed memory leak due to circular dependency
