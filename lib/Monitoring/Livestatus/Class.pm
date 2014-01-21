@@ -76,8 +76,7 @@ __END__
 
 =head1 NAME
 
-Monitoring::Livestatus::Class - Object-Oriented interface for
-Monitoring::Livestatus
+Monitoring::Livestatus::Class - Object-Oriented interface for Monitoring::Livestatus
 
 =head1 DESCRIPTION
 
